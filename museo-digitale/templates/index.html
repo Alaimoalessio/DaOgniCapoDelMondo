@@ -1,0 +1,586 @@
+{% extends "base.html" %}
+
+{% block title %}Da ogni capo del mondo - Museo Digitale{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Particle Morphing -->
+<section class="home-hero" id="heroSection">
+    <!-- Three.js Canvas Container -->
+    <div id="hero-canvas" class="hero-canvas-container"></div>
+    
+    <!-- Hero Content (Text Overlay) -->
+    <div class="home-hero-content" id="heroContent">
+        <h1 class="home-hero-title" id="heroTitle">Da ogni capo del mondo</h1>
+        <p class="home-hero-subtitle" id="heroSubtitle">Un viaggio straordinario attraverso la storia e le culture del mondo</p>
+                </div>
+
+    <!-- Globe Container (will be revealed after morphing) -->
+    <div class="hero-globe-container" id="heroGlobeContainer">
+        <div class="hero-globe-overlay">
+            <div class="hero-globe-info">
+                <h2 class="hero-globe-title">Esplora il Mondo</h2>
+                <p class="hero-globe-description">Naviga attraverso la mappa interattiva e scopri le origini geografiche di ogni oggetto</p>
+                <div class="hero-globe-stats">
+                    <span class="hero-stat">{{ globe_total_items|default(0) }} oggetti</span>
+                    <span class="hero-stat-separator">•</span>
+                    <span class="hero-stat">{{ globe_total_regions|default(0) }} regioni</span>
+                </div>
+                <a href="{{ url_for('globe') }}" class="btn-globe-explore">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                    </svg>
+                    <span>Esplora Mappa Completa</span>
+                </a>
+                </div>
+        </div>
+        <!-- Globe will be initialized here via JavaScript -->
+    </div>
+</section>
+
+<!-- Featured Items Section -->
+{% if featured_items %}
+<section class="home-featured" id="featuredSection">
+    <div class="container">
+        <div class="home-featured-content-wrapper">
+            <div class="home-section-header">
+                <h2 class="home-section-title">In Evidenza</h2>
+                <p class="home-section-subtitle">Scopri alcuni dei pezzi più significativi della nostra collezione</p>
+        </div>
+
+            <div class="home-featured-grid">
+                {% for item in featured_items %}
+                <article class="home-featured-card">
+                    <a href="{{ url_for('item_detail', item_id=item.id) }}" class="home-featured-link">
+                        <div class="home-featured-image">
+                        <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy">
+                            <div class="home-featured-overlay">
+                                <span class="home-featured-view">Vedi dettagli →</span>
+                            </div>
+                        </div>
+                        <div class="home-featured-content">
+                            <h3 class="home-featured-title">{{ item.title }}</h3>
+                            <div class="home-featured-meta">
+                            {% if item.region %}
+                            <span class="badge badge-region">{{ item.region.name }}</span>
+                            {% endif %}
+                            {% if item.era %}
+                            <span class="badge badge-era">{{ item.era.name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+
+            <div class="home-featured-cta">
+                <a href="{{ url_for('collezione') }}" class="btn-secondary">
+                    <span>Vedi Tutta la Collezione</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<!-- Three.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- GSAP & ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<!-- Globe.GL Library (for final globe) -->
+<script src="//unpkg.com/globe.gl"></script>
+
+<script>
+    // Particle Morphing Effect: Logo -> Globe
+    (function() {
+        'use strict';
+
+        const canvasContainer = document.getElementById('hero-canvas');
+        const heroSection = document.getElementById('heroSection');
+        const heroContent = document.getElementById('heroContent');
+        const heroGlobeContainer = document.getElementById('heroGlobeContainer');
+        
+        if (!canvasContainer || !heroSection) return;
+
+        // Three.js Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ 
+            antialias: true, 
+            alpha: true,
+            powerPreference: "high-performance"
+        });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        canvasContainer.appendChild(renderer.domElement);
+
+        // Camera position
+        camera.position.z = 5;
+
+        // Variables
+        let particleSystem = null;
+        let logoTexture = null;
+        let morphProgress = 0;
+        let time = 0;
+        const particleCount = 10000; // Adjust based on performance
+        const logoSize = 3; // Size of logo in 3D space
+        const globeRadius = 2; // Radius of target globe
+
+        // Load logo texture and initialize
+        const logoUrl = "{{ url_for('static', filename='images/logo.png') }}";
+        const textureLoader = new THREE.TextureLoader();
+        
+        // Initialize particle system (will load texture inside)
+        initParticleSystem();
+
+        // Create particle system from logo
+        function initParticleSystem() {
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            const startPositions = new Float32Array(particleCount * 3); // Logo positions
+            const endPositions = new Float32Array(particleCount * 3); // Globe positions
+            const noiseOffsets = new Float32Array(particleCount * 3); // For brownian motion
+
+            // Gold color
+            const goldColor = new THREE.Color(0xF5D742);
+
+            // Create canvas to sample logo pixels
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                let particleIndex = 0;
+                const step = Math.max(1, Math.floor((canvas.width * canvas.height) / particleCount));
+
+                // Sample pixels and create particles
+                for (let i = 0; i < data.length && particleIndex < particleCount; i += step * 4) {
+                    const x = (i / 4) % canvas.width;
+                    const y = Math.floor((i / 4) / canvas.width);
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    const a = data[i + 3];
+
+                    // Only create particles for non-transparent pixels with some color
+                    if (a > 10 && (r > 50 || g > 50 || b > 50)) {
+                        // Normalize coordinates to -1 to 1
+                        const normalizedX = (x / canvas.width) * 2 - 1;
+                        const normalizedY = 1 - (y / canvas.height) * 2; // Flip Y
+
+                        // Start position (logo shape, flat)
+                        const startX = normalizedX * logoSize;
+                        const startY = normalizedY * logoSize;
+                        const startZ = 0;
+
+                        startPositions[particleIndex * 3] = startX;
+                        startPositions[particleIndex * 3 + 1] = startY;
+                        startPositions[particleIndex * 3 + 2] = startZ;
+
+                        // End position (globe sphere)
+                        // Distribute particles on sphere surface
+                        const theta = Math.random() * Math.PI * 2; // Longitude
+                        const phi = Math.acos(Math.random() * 2 - 1); // Latitude
+                        const endX = globeRadius * Math.sin(phi) * Math.cos(theta);
+                        const endY = globeRadius * Math.sin(phi) * Math.sin(theta);
+                        const endZ = globeRadius * Math.cos(phi);
+
+                        endPositions[particleIndex * 3] = endX;
+                        endPositions[particleIndex * 3 + 1] = endY;
+                        endPositions[particleIndex * 3 + 2] = endZ;
+
+                        // Current position (start at logo)
+                        positions[particleIndex * 3] = startX;
+                        positions[particleIndex * 3 + 1] = startY;
+                        positions[particleIndex * 3 + 2] = startZ;
+
+                        // Color (gold)
+                        colors[particleIndex * 3] = goldColor.r;
+                        colors[particleIndex * 3 + 1] = goldColor.g;
+                        colors[particleIndex * 3 + 2] = goldColor.b;
+
+                        // Random noise offsets for brownian motion
+                        noiseOffsets[particleIndex * 3] = Math.random() * Math.PI * 2;
+                        noiseOffsets[particleIndex * 3 + 1] = Math.random() * Math.PI * 2;
+                        noiseOffsets[particleIndex * 3 + 2] = Math.random() * Math.PI * 2;
+
+                        particleIndex++;
+                    }
+                }
+
+                // Trim arrays to actual particle count
+                const actualCount = particleIndex;
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions.slice(0, actualCount * 3), 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors.slice(0, actualCount * 3), 3));
+                geometry.setAttribute('startPosition', new THREE.BufferAttribute(startPositions.slice(0, actualCount * 3), 3));
+                geometry.setAttribute('endPosition', new THREE.BufferAttribute(endPositions.slice(0, actualCount * 3), 3));
+                geometry.setAttribute('noiseOffset', new THREE.BufferAttribute(noiseOffsets.slice(0, actualCount * 3), 3));
+
+                // Vertex Shader for morphing
+                const vertexShader = `
+                    attribute vec3 startPosition;
+                    attribute vec3 endPosition;
+                    attribute vec3 noiseOffset;
+                    attribute vec3 color;
+                    
+                    uniform float morphProgress;
+                    uniform float time;
+                    uniform float noiseAmount;
+                    
+                    varying vec3 vColor;
+                    
+                    void main() {
+                        // Interpolate between start and end positions
+                        vec3 currentPos = mix(startPosition, endPosition, morphProgress);
+                        
+                        // Add brownian motion (noise)
+                        float noiseX = sin(time * 0.5 + noiseOffset.x) * noiseAmount * (1.0 - morphProgress);
+                        float noiseY = cos(time * 0.7 + noiseOffset.y) * noiseAmount * (1.0 - morphProgress);
+                        float noiseZ = sin(time * 0.6 + noiseOffset.z) * noiseAmount * (1.0 - morphProgress);
+                        
+                        vec3 finalPosition = currentPos + vec3(noiseX, noiseY, noiseZ);
+                        
+                        vec4 mvPosition = modelViewMatrix * vec4(finalPosition, 1.0);
+                        gl_Position = projectionMatrix * mvPosition;
+                        
+                        // Point size based on distance and morph progress
+                        float size = 2.0 * (1.0 + morphProgress * 0.5);
+                        gl_PointSize = size * (300.0 / -mvPosition.z);
+                        
+                        vColor = color;
+                    }
+                `;
+
+                // Fragment Shader
+                const fragmentShader = `
+                    varying vec3 vColor;
+                    
+                    void main() {
+                        // Circular point
+                        float dist = distance(gl_PointCoord, vec2(0.5));
+                        if (dist > 0.5) discard;
+                        
+                        // Soft edge
+                        float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+                        
+                        gl_FragColor = vec4(vColor, alpha);
+                    }
+                `;
+
+                // Create material
+                const material = new THREE.ShaderMaterial({
+                    vertexShader: vertexShader,
+                    fragmentShader: fragmentShader,
+                    uniforms: {
+                        morphProgress: { value: 0 },
+                        time: { value: 0 },
+                        noiseAmount: { value: 0.05 }
+                    },
+                    transparent: true,
+                    vertexColors: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+
+                // Create particle system
+                particleSystem = new THREE.Points(geometry, material);
+                scene.add(particleSystem);
+            };
+            
+            img.src = logoUrl;
+        }
+
+        // GSAP ScrollTrigger for morphing
+        gsap.registerPlugin(ScrollTrigger);
+
+        const morphTimeline = gsap.timeline({
+            scrollTrigger: {
+                trigger: heroSection,
+                start: "top top",
+                end: "+=1500", // Increased scroll distance for longer visibility
+                scrub: true,
+                pin: true,
+                anticipatePin: 1,
+                onUpdate: (self) => {
+                    morphProgress = self.progress;
+                    
+                    // Update shader uniform
+                    if (particleSystem && particleSystem.material) {
+                        particleSystem.material.uniforms.morphProgress.value = morphProgress;
+                    }
+                    
+                    // Fade out text
+                    if (heroContent) {
+                        heroContent.style.opacity = Math.max(0, 1 - morphProgress * 2);
+                    }
+                    
+                    // Reveal globe at the end and hide particles
+                    if (heroGlobeContainer) {
+                        if (morphProgress > 0.75) {
+                            // Start revealing globe earlier (at 75% instead of 85%)
+                            // Use smoother easing for opacity transition
+                            const revealStart = 0.75;
+                            const revealEnd = 0.90;
+                            const revealRange = revealEnd - revealStart;
+                            
+                            if (morphProgress < revealEnd) {
+                                // Smooth fade in from 75% to 90%
+                                const normalizedProgress = (morphProgress - revealStart) / revealRange;
+                                // Use ease-out curve for smoother transition
+                                const easedProgress = 1 - Math.pow(1 - normalizedProgress, 3);
+                                heroGlobeContainer.style.opacity = easedProgress;
+                            } else {
+                                // Fully visible from 90% onwards
+                                heroGlobeContainer.style.opacity = 1;
+                            }
+                            
+                            // Enable interactions when globe is fully visible
+                            if (morphProgress > 0.90) {
+                                heroGlobeContainer.classList.add('active');
+                            } else {
+                                heroGlobeContainer.classList.remove('active');
+                            }
+                            
+                            // Hide particle system gradually
+                            if (particleSystem) {
+                                if (morphProgress > 0.92) {
+                                    // Fade out particles gradually
+                                    const particleFade = 1 - ((morphProgress - 0.92) / 0.08);
+                                    particleSystem.material.opacity = Math.max(0, particleFade);
+                                    if (morphProgress > 0.98) {
+                                        particleSystem.visible = false;
+                                    }
+                                } else {
+                                    particleSystem.visible = true;
+                                    if (particleSystem.material.opacity !== undefined) {
+                                        particleSystem.material.opacity = 1;
+                                    }
+                                }
+                            }
+                        } else {
+                            // Hide globe completely when morphing is not advanced enough
+                            heroGlobeContainer.style.opacity = 0;
+                            heroGlobeContainer.classList.remove('active');
+                            
+                            // Show particles
+                            if (particleSystem) {
+                                particleSystem.visible = true;
+                                if (particleSystem.material.opacity !== undefined) {
+                                    particleSystem.material.opacity = 1;
+                                }
+                            }
+                        }
+                    }
+                },
+                onLeave: () => {
+                    // When scroll leaves the pinned section, hide globe and show particles
+                    if (heroGlobeContainer) {
+                        heroGlobeContainer.style.opacity = 0;
+                        heroGlobeContainer.style.pointerEvents = 'none';
+                        heroGlobeContainer.classList.remove('active');
+                    }
+                    if (particleSystem) {
+                        particleSystem.visible = true;
+                    }
+                },
+                onEnterBack: () => {
+                    // When scrolling back into the section, reset based on current progress
+                    if (heroGlobeContainer) {
+                        if (morphProgress > 0.75) {
+                            const revealStart = 0.75;
+                            const revealEnd = 0.90;
+                            const revealRange = revealEnd - revealStart;
+                            
+                            if (morphProgress < revealEnd) {
+                                const normalizedProgress = (morphProgress - revealStart) / revealRange;
+                                const easedProgress = 1 - Math.pow(1 - normalizedProgress, 3);
+                                heroGlobeContainer.style.opacity = easedProgress;
+                            } else {
+                                heroGlobeContainer.style.opacity = 1;
+                            }
+                            
+                            if (morphProgress > 0.90) {
+                                heroGlobeContainer.style.pointerEvents = 'auto';
+                                heroGlobeContainer.classList.add('active');
+                            } else {
+                                heroGlobeContainer.style.pointerEvents = 'none';
+                                heroGlobeContainer.classList.remove('active');
+                            }
+                        } else {
+                            heroGlobeContainer.style.opacity = 0;
+                            heroGlobeContainer.style.pointerEvents = 'none';
+                        }
+                    }
+                    if (particleSystem) {
+                        particleSystem.visible = morphProgress < 0.92;
+                        if (morphProgress < 0.92 && particleSystem.material.opacity !== undefined) {
+                            particleSystem.material.opacity = 1;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize Globe (will be revealed after morphing)
+        function initGlobe() {
+            if (!heroGlobeContainer) return;
+
+            const regionData = {{ globe_region_data | tojson | safe }} || [];
+            
+            if (!regionData || regionData.length === 0) {
+                console.warn('No globe data available');
+                return;
+            }
+
+            const globeViz = document.createElement('div');
+            globeViz.id = 'heroGlobeViz';
+            globeViz.style.width = '100%';
+            globeViz.style.height = '100%';
+            heroGlobeContainer.appendChild(globeViz);
+
+            const globe = Globe()(globeViz)
+                .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+                .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+                .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+                .showAtmosphere(true)
+                .atmosphereColor('#00D9FF')
+                .atmosphereAltitude(0.2);
+
+            globe.pointOfView({ lat: 20, lng: 0, altitude: 2.5 });
+
+            const points = regionData.map(region => ({
+                lat: region.lat,
+                lng: region.lng,
+                size: 1.5 + (region.item_count * 0.2),
+                color: '#E8D5A3',
+                label: `${region.name} (${region.item_count} oggetti)`,
+                region: region
+            }));
+
+            globe
+                .pointsData(points)
+                .pointLat('lat')
+                .pointLng('lng')
+                .pointAltitude(0.05)
+                .pointRadius('size')
+                .pointColor('color')
+                .pointLabel('label')
+                .pointsMerge(true)
+                .pointsTransitionDuration(1000);
+
+            const arcsData = [];
+            for (let i = 0; i < points.length - 1; i++) {
+                arcsData.push({
+                    startLat: points[i].lat,
+                    startLng: points[i].lng,
+                    endLat: points[i + 1].lat,
+                    endLng: points[i + 1].lng,
+                    color: ['rgba(232, 213, 163, 0.3)', 'rgba(232, 213, 163, 0.2)']
+                });
+            }
+
+            globe.arcsData(arcsData)
+                .arcColor('color')
+                .arcDashLength(0.5)
+                .arcDashGap(0.3)
+                .arcDashAnimateTime(4000)
+                .arcStroke(1.0)
+                .arcsTransitionDuration(1000);
+
+            // Configure controls - disable zoom to allow page scrolling
+            const controls = globe.controls();
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.3;
+            controls.enableZoom = false; // Disable zoom to allow page scroll
+            controls.enablePan = false; // Disable pan
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.1;
+            
+            // Prevent wheel events from being captured by the globe
+            // Allow page scroll to work normally
+            const preventGlobeZoom = (e) => {
+                // Only prevent if the event is directly on the globe container
+                // This allows page scroll to work
+                if (e.target === globeViz || globeViz.contains(e.target)) {
+                    // Allow scroll to bubble up to page
+                    return;
+                }
+            };
+            
+            // Use capture phase to intercept but don't prevent default
+            globeViz.addEventListener('wheel', preventGlobeZoom, { passive: true, capture: true });
+            
+            // Also prevent touch events from interfering
+            globeViz.addEventListener('touchstart', (e) => {
+                // Only prevent if it's a pinch gesture, allow single touch for scroll
+                if (e.touches.length > 1) {
+                    e.stopPropagation();
+                }
+            }, { passive: true });
+
+            window.addEventListener('resize', () => {
+                globe.width(globeViz.offsetWidth);
+                globe.height(globeViz.offsetHeight);
+            });
+
+            window.heroGlobe = globe;
+        }
+
+        // Initialize globe after a delay
+        setTimeout(initGlobe, 500);
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            time += 0.016; // ~60fps
+            
+            // Update time uniform for noise animation
+            if (particleSystem && particleSystem.material) {
+                particleSystem.material.uniforms.time.value = time;
+            }
+            
+            // Rotate camera slightly for dynamic feel
+            if (morphProgress < 0.5) {
+                camera.position.x = Math.sin(time * 0.2) * 0.5;
+                camera.position.y = Math.cos(time * 0.15) * 0.3;
+            }
+            
+            renderer.render(scene, camera);
+        }
+
+        // Handle resize
+        function handleResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('resize', handleResize);
+        
+        // Start animation
+        animate();
+    })();
+</script>
+
+{% endblock %}
+

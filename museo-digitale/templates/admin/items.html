@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Gestisci Oggetti') }}{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="container">
+        <div class="admin-header">
+            <h1 class="section-title">{{ _('Gestisci Oggetti') }}</h1>
+            <a href="{{ url_for('admin_item_new') }}" class="btn btn-primary">{{ _('Nuovo Oggetto') }}</a>
+        </div>
+
+        <div class="admin-filters">
+            <form method="GET" class="filter-form">
+                <input type="text" name="search" placeholder="{{ _('Cerca...') }}" value="{{ search }}" class="form-input">
+                <select name="category" class="form-input">
+                    <option value="">{{ _('Tutte le categorie') }}</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+                <select name="region" class="form-input">
+                    <option value="">{{ _('Tutte le regioni') }}</option>
+                    {% for reg in regions %}
+                    <option value="{{ reg.id }}" {% if region_id == reg.id %}selected{% endif %}>{{ reg.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-secondary">{{ _('Filtra') }}</button>
+                <a href="{{ url_for('admin_items') }}" class="btn btn-outline">{{ _('Reset') }}</a>
+            </form>
+        </div>
+
+        <div class="admin-items-grid">
+            {% for item in items.items %}
+            <div class="admin-item-card">
+                <div class="admin-item-image">
+                    {% if item.image_url %}
+                    <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}">
+                    {% else %}
+                    <div class="no-image">{{ _('Nessuna immagine') }}</div>
+                    {% endif %}
+                </div>
+                <div class="admin-item-content">
+                    <h3>{{ item.title }}</h3>
+                    <p class="admin-item-meta">
+                        {% if item.category %}{{ item.category.name }}{% endif %}
+                        {% if item.region %} • {{ item.region.name }}{% endif %}
+                    </p>
+                    <div class="admin-item-actions">
+                        <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-outline btn-small" target="_blank">{{ _('Vedi') }}</a>
+                        <a href="{{ url_for('admin_item_edit', item_id=item.id) }}" class="btn btn-secondary btn-small">{{ _('Modifica') }}</a>
+                        <form method="POST" action="{{ url_for('admin_item_delete', item_id=item.id) }}" class="inline-form" onsubmit="return confirm('{{ _('Sei sicuro?') }}');">
+                            <button type="submit" class="btn btn-danger btn-small">{{ _('Elimina') }}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if items.pages > 1 %}
+        <div class="pagination">
+            {% if items.has_prev %}
+            <a href="{{ url_for('admin_items', page=items.prev_num, search=search, category=category_id, region=region_id) }}" class="pagination-link">{{ _('Precedente') }}</a>
+            {% endif %}
+            <span class="pagination-info">{{ _('Pagina') }} {{ items.page }} {{ _('di') }} {{ items.pages }}</span>
+            {% if items.has_next %}
+            <a href="{{ url_for('admin_items', page=items.next_num, search=search, category=category_id, region=region_id) }}" class="pagination-link">{{ _('Successiva') }}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Timeline Interattiva - Didattica{% endblock %}
+
+{% block content %}
+<div class="timeline-didattica-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{{ url_for('didattica') }}">Didattica</a>
+        <span class="separator">›</span>
+        <span>Timeline</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="timeline-didattica-header">
+        <h1 class="timeline-didattica-title">Timeline Interattiva</h1>
+        <p class="timeline-didattica-subtitle">
+            Esplora la collezione attraverso una timeline cronologica. Clicca sugli oggetti per scoprire di più.
+        </p>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-wrapper">
+        <div class="timeline-line"></div>
+        <div class="timeline-items" id="timelineItems">
+            {% for item in items %}
+            <div class="timeline-item" data-year="{{ item.year_from or 0 }}" data-id="{{ item.id }}">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">{{ item.year_from }}{% if item.year_to and item.year_to != item.year_from %} - {{ item.year_to }}{% endif %}</div>
+                    <div class="timeline-item-card">
+                        <div class="timeline-item-image">
+                            <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy">
+                        </div>
+                        <div class="timeline-item-info">
+                            <h3 class="timeline-item-title">{{ item.title }}</h3>
+                            <div class="timeline-item-meta">
+                                {% if item.region %}
+                                <span class="badge badge-region">{{ item.region.name }}</span>
+                                {% endif %}
+                                {% if item.era %}
+                                <span class="badge badge-era">{{ item.era.name }}</span>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('item_detail', item_id=item.id) }}" class="timeline-item-link">Scopri di più →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="timeline-filters">
+        <button class="filter-btn active" data-filter="all">Tutti</button>
+        {% for era in eras %}
+        <button class="filter-btn" data-filter="era-{{ era.id }}">{{ era.name }}</button>
+        {% endfor %}
+    </div>
+
+    <!-- Back Button -->
+    <div class="timeline-actions">
+        <a href="{{ url_for('didattica') }}" class="btn-secondary">← Torna alla Didattica</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    // Filter functionality
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            
+            // Update active button
+            filterButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter items
+            timelineItems.forEach(item => {
+                if (filter === 'all') {
+                    item.style.display = 'block';
+                } else {
+                    // Filter logic can be enhanced
+                    item.style.display = 'block';
+                }
+            });
+        });
+    });
+    
+    // Smooth scroll to items
+    timelineItems.forEach(item => {
+        item.addEventListener('click', function() {
+            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+});
+</script>
+{% endblock %}
+

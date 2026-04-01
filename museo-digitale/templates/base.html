@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="{{ session.get('language', 'it') }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Da ogni capo del mondo - Museo Digitale di copricapi e oggetti storici">
+
+    <title>{% block title %}Da ogni capo del mondo{% endblock %} - Museo Digitale</title>
+
+    <!-- Google Fonts - Modern 2025 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <h1>Da ogni capo del mondo</h1>
+                <p class="tagline">Museo Digitale</p>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('collezione') }}" class="nav-link"><span>{{ _('Collezione') }}</span></a>
+                <a href="{{ url_for('epoche') }}" class="nav-link"><span>{{ _('Epoche') }}</span></a>
+                <a href="{{ url_for('didattica') }}" class="nav-link"><span>{{ _('Didattica') }}</span></a>
+                <a href="{{ url_for('globe') }}" class="nav-link"><span>{{ _('Esplora Mappa') }}</span></a>
+                <a href="{{ url_for('advanced_search') }}" class="nav-link"><span>🔍 {{ _('Ricerca') }}</span></a>
+                <a href="{{ url_for('chi_siamo') }}" class="nav-link"><span>{{ _('Chi Siamo') }}</span></a>
+                <a href="{{ url_for('contact') }}" class="nav-link"><span>{{ _('Contatti') }}</span></a>
+                
+                <!-- Language Switcher -->
+                <div class="language-switcher">
+                    <button class="language-btn" id="languageBtn">
+                        <span class="language-icon">🌐</span>
+                        <span class="language-current">{{ session.get('language', 'it')|upper }}</span>
+                    </button>
+                    <div class="language-menu" id="languageMenu">
+                        <a href="{{ url_for('set_language', lang='it') }}" class="language-option {% if session.get('language', 'it') == 'it' %}active{% endif %}">🇮🇹 Italiano</a>
+                        <a href="{{ url_for('set_language', lang='en') }}" class="language-option {% if session.get('language', 'it') == 'en' %}active{% endif %}">🇬🇧 English</a>
+                        <a href="{{ url_for('set_language', lang='es') }}" class="language-option {% if session.get('language', 'it') == 'es' %}active{% endif %}">🇪🇸 Español</a>
+                        <a href="{{ url_for('set_language', lang='fr') }}" class="language-option {% if session.get('language', 'it') == 'fr' %}active{% endif %}">🇫🇷 Français</a>
+                        <a href="{{ url_for('set_language', lang='de') }}" class="language-option {% if session.get('language', 'it') == 'de' %}active{% endif %}">🇩🇪 Deutsch</a>
+                    </div>
+                </div>
+                
+                <!-- Login/User Menu -->
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('area_privata') }}" class="nav-link nav-user">
+                    <span>👤 {{ current_user.username }}</span>
+                </a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-link">
+                    <span>🔧 {{ _('Admin') }}</span>
+                </a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="nav-link">
+                    <span>{{ _('Logout') }}</span>
+                </a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="nav-link nav-login">
+                    <span>{{ _('Login') }}</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        <span>{{ message }}</span>
+                        <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Da ogni capo del mondo</h3>
+                    <p>Museo digitale di oltre 700 copricapi, abiti e oggetti storici provenienti da tutto il mondo.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Collezione</h4>
+                    <ul>
+                        <li><a href="{{ url_for('collezione') }}">Tutti gli oggetti</a></li>
+                        <li><a href="#">Militaria</a></li>
+                        <li><a href="#">Cerimoniale</a></li>
+                        <li><a href="#">Abbigliamento</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="#">Storia della collezione</a></li>
+                        <li><a href="#">Conservazione</a></li>
+                        <li><a href="#">Ricerca</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Da ogni capo del mondo. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

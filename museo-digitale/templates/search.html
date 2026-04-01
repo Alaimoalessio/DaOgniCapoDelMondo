@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Ricerca Avanzata') }}{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <div class="container">
+        <div class="search-header">
+            <h1 class="section-title">{{ _('Ricerca Avanzata') }}</h1>
+        </div>
+
+        <form method="GET" action="{{ url_for('advanced_search') }}" class="search-form">
+            <div class="search-filters">
+                <div class="form-group">
+                    <label for="q" class="form-label">{{ _('Testo') }}</label>
+                    <input type="text" id="q" name="q" class="form-input" value="{{ query }}" placeholder="{{ _('Cerca nel titolo, descrizione...') }}">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category" class="form-label">{{ _('Categoria') }}</label>
+                        <select id="category" name="category" class="form-input">
+                            <option value="">{{ _('Tutte') }}</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="region" class="form-label">{{ _('Regione') }}</label>
+                        <select id="region" name="region" class="form-input">
+                            <option value="">{{ _('Tutte') }}</option>
+                            {% for reg in regions %}
+                            <option value="{{ reg.id }}" {% if region_id == reg.id %}selected{% endif %}>{{ reg.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="era" class="form-label">{{ _('Epoca') }}</label>
+                        <select id="era" name="era" class="form-input">
+                            <option value="">{{ _('Tutte') }}</option>
+                            {% for era in eras %}
+                            <option value="{{ era.id }}" {% if era_id == era.id %}selected{% endif %}>{{ era.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="material" class="form-label">{{ _('Materiale') }}</label>
+                        <select id="material" name="material" class="form-input">
+                            <option value="">{{ _('Tutti') }}</option>
+                            {% for mat in materials %}
+                            <option value="{{ mat.id }}" {% if material_id == mat.id %}selected{% endif %}>{{ mat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="year_from" class="form-label">{{ _('Anno da') }}</label>
+                        <input type="number" id="year_from" name="year_from" class="form-input" value="{{ year_from }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year_to" class="form-label">{{ _('Anno a') }}</label>
+                        <input type="number" id="year_to" name="year_to" class="form-input" value="{{ year_to }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="conservation_state" class="form-label">{{ _('Stato Conservazione') }}</label>
+                        <select id="conservation_state" name="conservation_state" class="form-input">
+                            <option value="">{{ _('Tutti') }}</option>
+                            <option value="Ottimo" {% if conservation_state == 'Ottimo' %}selected{% endif %}>Ottimo</option>
+                            <option value="Buono" {% if conservation_state == 'Buono' %}selected{% endif %}>Buono</option>
+                            <option value="Discreto" {% if conservation_state == 'Discreto' %}selected{% endif %}>Discreto</option>
+                            <option value="Restaurato" {% if conservation_state == 'Restaurato' %}selected{% endif %}>Restaurato</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">{{ _('Cerca') }}</button>
+                    <a href="{{ url_for('advanced_search') }}" class="btn btn-outline">{{ _('Reset') }}</a>
+                </div>
+            </div>
+        </form>
+
+        <div class="search-results">
+            <h2 class="section-subtitle">{{ _('Risultati') }} ({{ items|length }})</h2>
+            
+            {% if items %}
+                <div class="items-grid">
+                    {% for item in items %}
+                    <article class="museum-item">
+                        <a href="{{ url_for('item_detail', item_id=item.id) }}" class="museum-item-link">
+                            <div class="museum-image-wrapper">
+                                <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy" class="museum-image">
+                                <div class="museum-overlay">
+                                    <div class="museum-overlay-content">
+                                        <h3 class="museum-item-title">{{ item.title }}</h3>
+                                        {% if item.category %}
+                                        <span class="museum-item-category">{{ item.category.name }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-state">{{ _('Nessun risultato trovato.') }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

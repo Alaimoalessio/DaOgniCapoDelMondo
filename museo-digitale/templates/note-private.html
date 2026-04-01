@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Nota Privata') }} - {{ item.title }}{% endblock %}
+
+{% block content %}
+<div class="note-private-container">
+    <div class="container">
+        <div class="note-private-header">
+            <a href="{{ url_for('item_detail', item_id=item.id) }}" class="back-link">← {{ _('Torna all\'oggetto') }}</a>
+            <h1 class="section-title">{{ _('Nota Privata') }}</h1>
+            <p class="section-subtitle">{{ item.title }}</p>
+        </div>
+
+        <div class="note-private-card">
+            <form method="POST" action="{{ url_for('private_note', item_id=item.id) }}" class="note-form">
+                <div class="form-group">
+                    <label for="note" class="form-label">{{ _('Nota') }}</label>
+                    <textarea id="note" name="note" class="form-textarea" rows="10" placeholder="{{ _('Aggiungi una nota privata per questo oggetto...') }}">{{ note.note if note else '' }}</textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">{{ _('Salva Nota') }}</button>
+                    <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-outline">{{ _('Annulla') }}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

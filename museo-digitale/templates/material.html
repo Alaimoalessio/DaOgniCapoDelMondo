@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}{{ material.name }} - Materiale{% endblock %}
+
+{% block content %}
+<div class="material-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{{ url_for('collezione') }}">Collezione</a>
+        <span class="separator">›</span>
+        <span>Materiali</span>
+        <span class="separator">›</span>
+        <span>{{ material.name }}</span>
+    </nav>
+
+    <!-- Material Header -->
+    <div class="material-header">
+        <h1 class="material-title">{{ material.name }}</h1>
+        {% if material.description %}
+        <p class="material-subtitle">{{ material.description }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Material Details Grid -->
+    <div class="material-details-grid">
+        <!-- Properties Section -->
+        <section class="material-section">
+            <h2 class="section-heading">
+                <span class="section-icon">⚙️</span>
+                Proprietà del Materiale
+            </h2>
+            <div class="material-content">
+                <p class="material-text">{{ details.properties }}</p>
+            </div>
+        </section>
+
+        <!-- Quality Section -->
+        <section class="material-section">
+            <h2 class="section-heading">
+                <span class="section-icon">⭐</span>
+                Qualità e Caratteristiche
+            </h2>
+            <div class="material-content">
+                <p class="material-text">{{ details.quality }}</p>
+            </div>
+        </section>
+
+        <!-- Historical Uses Section -->
+        <section class="material-section">
+            <h2 class="section-heading">
+                <span class="section-icon">📜</span>
+                Utilizzi Storici
+            </h2>
+            <div class="material-content">
+                <p class="material-text">{{ details.historical_uses }}</p>
+            </div>
+        </section>
+
+        <!-- Significance Section -->
+        <section class="material-section">
+            <h2 class="section-heading">
+                <span class="section-icon">🏛️</span>
+                Significato Storico e Culturale
+            </h2>
+            <div class="material-content">
+                <p class="material-text">{{ details.significance }}</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Items Using This Material -->
+    {% if items %}
+    <section class="material-items-section">
+        <h2 class="section-title">
+            Oggetti nella Collezione
+            <span class="items-count">({{ items|length }})</span>
+        </h2>
+        <p class="section-subtitle">Oggetti che utilizzano questo materiale</p>
+
+        <div class="material-items-grid">
+            {% for item in items %}
+            <article class="item-card">
+                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="card-link">
+                    <div class="card-image">
+                        <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">{{ item.title }}</h3>
+                        <div class="card-meta">
+                            {% if item.region %}
+                            <span class="badge badge-region">{{ item.region.name }}</span>
+                            {% endif %}
+                            {% if item.era %}
+                            <span class="badge badge-era">{{ item.era.name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Back Button -->
+    <div class="material-actions">
+        <a href="{{ url_for('collezione') }}" class="btn-secondary">← Torna alla collezione</a>
+    </div>
+</div>
+{% endblock %}
+

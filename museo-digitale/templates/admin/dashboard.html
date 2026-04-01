@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Admin Dashboard') }}{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="container">
+        <div class="admin-header">
+            <h1 class="section-title">{{ _('Pannello di Controllo') }}</h1>
+            <div class="admin-actions">
+                <a href="{{ url_for('admin_items') }}" class="btn btn-primary">{{ _('Gestisci Oggetti') }}</a>
+                <a href="{{ url_for('admin_exhibitions') }}" class="btn btn-secondary">{{ _('Gestisci Mostre') }}</a>
+                <a href="{{ url_for('admin_statistics') }}" class="btn btn-secondary">{{ _('Statistiche') }}</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-content">
+                    <h3>{{ total_items }}</h3>
+                    <p>{{ _('Oggetti Totali') }}</p>
+                </div>
+            </div>
+
+            <div class="admin-stat-card">
+                <div class="stat-icon">🎨</div>
+                <div class="stat-content">
+                    <h3>{{ total_exhibitions }}</h3>
+                    <p>{{ _('Mostre') }}</p>
+                </div>
+            </div>
+
+            <div class="admin-stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-content">
+                    <h3>{{ active_loans }}</h3>
+                    <p>{{ _('Prestiti Attivi') }}</p>
+                </div>
+            </div>
+
+            <div class="admin-stat-card">
+                <div class="stat-icon">🔔</div>
+                <div class="stat-content">
+                    <h3>{{ pending_notifications }}</h3>
+                    <p>{{ _('Notifiche') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-sections-grid">
+            <div class="admin-section-card">
+                <h2 class="section-subtitle">{{ _('Oggetti Recenti') }}</h2>
+                <ul class="admin-list">
+                    {% for item in recent_items %}
+                    <li>
+                        <a href="{{ url_for('admin_item_edit', item_id=item.id) }}">{{ item.title }}</a>
+                        <span class="admin-meta">{{ item.created_at.strftime('%d/%m/%Y') }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('admin_items') }}" class="btn btn-outline btn-small">{{ _('Vedi Tutti') }}</a>
+            </div>
+
+            <div class="admin-section-card">
+                <h2 class="section-subtitle">{{ _('Mostre Recenti') }}</h2>
+                <ul class="admin-list">
+                    {% for exhibition in recent_exhibitions %}
+                    <li>
+                        <a href="{{ url_for('admin_exhibition_edit', exhibition_id=exhibition.id) }}">{{ exhibition.title }}</a>
+                        <span class="admin-meta">{{ exhibition.start_date.strftime('%d/%m/%Y') }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('admin_exhibitions') }}" class="btn btn-outline btn-small">{{ _('Vedi Tutte') }}</a>
+            </div>
+        </div>
+
+        <div class="admin-quick-actions">
+            <h2 class="section-subtitle">{{ _('Azioni Rapide') }}</h2>
+            <div class="quick-actions-grid">
+                <a href="{{ url_for('admin_item_new') }}" class="quick-action-card">
+                    <div class="quick-action-icon">➕</div>
+                    <h3>{{ _('Nuovo Oggetto') }}</h3>
+                </a>
+                <a href="{{ url_for('admin_exhibition_new') }}" class="quick-action-card">
+                    <div class="quick-action-icon">🎨</div>
+                    <h3>{{ _('Nuova Mostra') }}</h3>
+                </a>
+                <a href="{{ url_for('export_pdf') }}" class="quick-action-card">
+                    <div class="quick-action-icon">📄</div>
+                    <h3>{{ _('Esporta PDF') }}</h3>
+                </a>
+                <a href="{{ url_for('admin_backup') }}" class="quick-action-card">
+                    <div class="quick-action-icon">💾</div>
+                    <h3>{{ _('Backup Database') }}</h3>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

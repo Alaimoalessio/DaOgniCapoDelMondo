@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}{{ era.name }} - Epoca Storica{% endblock %}
+
+{% block content %}
+<div class="era-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{{ url_for('collezione') }}">Collezione</a>
+        <span class="separator">›</span>
+        <a href="{{ url_for('epoche') }}">Epoche</a>
+        <span class="separator">›</span>
+        <span>{{ era.name }}</span>
+    </nav>
+    
+    <!-- Back Button -->
+    <div class="era-back-button">
+        <a href="{{ url_for('epoche') }}" class="btn-back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            <span>Torna alle Epoche</span>
+        </a>
+    </div>
+
+    <!-- Era Header -->
+    <div class="era-header" {% if era_image %}style="background-image: url('{{ url_for('static', filename='images/epoche/' + era_image) }}');"{% endif %}>
+        <div class="era-header-overlay"></div>
+        <div class="era-header-content">
+            <h1 class="era-title">{{ era.name }}</h1>
+            {% if era.year_start and era.year_end %}
+            <p class="era-period">
+                <span class="period-icon">📅</span>
+                {{ era.year_start }} - {{ era.year_end }}
+            </p>
+            {% endif %}
+            {% if era.description %}
+            <p class="era-subtitle">{{ era.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Era Details Grid -->
+    <div class="era-details-grid">
+        <!-- Description Section -->
+        <section class="era-section">
+            <h2 class="section-heading">
+                <span class="section-icon">📖</span>
+                Descrizione Generale
+            </h2>
+            <div class="era-content">
+                <p class="era-text">{{ details.description }}</p>
+            </div>
+        </section>
+
+        <!-- Characteristics Section -->
+        <section class="era-section">
+            <h2 class="section-heading">
+                <span class="section-icon">✨</span>
+                Caratteristiche Principali
+            </h2>
+            <div class="era-content">
+                <p class="era-text">{{ details.characteristics }}</p>
+            </div>
+        </section>
+
+        <!-- Historical Context Section -->
+        <section class="era-section">
+            <h2 class="section-heading">
+                <span class="section-icon">🏛️</span>
+                Contesto Storico
+            </h2>
+            <div class="era-content">
+                <p class="era-text">{{ details.historical_context }}</p>
+            </div>
+        </section>
+
+        <!-- Cultural Significance Section -->
+        <section class="era-section">
+            <h2 class="section-heading">
+                <span class="section-icon">🎨</span>
+                Significato Culturale
+            </h2>
+            <div class="era-content">
+                <p class="era-text">{{ details.cultural_significance }}</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Connection to Current Item (if coming from item detail) -->
+    {% if current_item %}
+    <section class="era-connection-section">
+        <h2 class="section-heading">
+            <span class="section-icon">🔗</span>
+            Connessione con l'Oggetto
+        </h2>
+        <div class="era-connection-content">
+            <p class="era-text">
+                L'oggetto <strong>"{{ current_item.title }}"</strong> appartiene a questa epoca storica e riflette le caratteristiche, i valori e lo stile del periodo {{ era.name }}.
+                {% if current_item.historical_context %}
+                {{ current_item.historical_context }}
+                {% endif %}
+            </p>
+            <div class="era-connection-item">
+                <a href="{{ url_for('item_detail', item_id=current_item.id) }}" class="connection-item-link">
+                    <div class="connection-item-image">
+                        <img src="{{ current_item.image_url|image_url }}" alt="{{ current_item.title }}">
+                    </div>
+                    <div class="connection-item-info">
+                        <h3>{{ current_item.title }}</h3>
+                        <p class="connection-item-meta">
+                            {% if current_item.region %}
+                            <span class="badge badge-region">{{ current_item.region.name }}</span>
+                            {% endif %}
+                            {% if current_item.category %}
+                            <span class="badge badge-category">{{ current_item.category.name }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Items From This Era -->
+    {% if items %}
+    <section class="era-items-section">
+        <h2 class="section-title">
+            Oggetti nella Collezione
+            <span class="items-count">({{ items|length }})</span>
+        </h2>
+        <p class="section-subtitle">Oggetti appartenenti all'epoca {{ era.name }}</p>
+
+        <div class="era-items-grid">
+            {% for item in items %}
+            <article class="item-card">
+                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="card-link">
+                    <div class="card-image">
+                        <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">{{ item.title }}</h3>
+                        <div class="card-meta">
+                            {% if item.region %}
+                            <span class="badge badge-region">{{ item.region.name }}</span>
+                            {% endif %}
+                            {% if item.category %}
+                            <span class="badge badge-category">{{ item.category.name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="era-actions">
+        <a href="{{ url_for('epoche') }}" class="btn-secondary">← Torna alle Epoche</a>
+        <a href="{{ url_for('collezione') }}" class="btn-outline">Vedi Collezione</a>
+    </div>
+</div>
+{% endblock %}
+

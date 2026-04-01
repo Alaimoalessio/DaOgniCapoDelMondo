@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Epoche Storiche{% endblock %}
+
+{% block content %}
+<div class="epoche-container">
+    <!-- Header with Background Image -->
+    <div class="epoche-header" {% if epoche_image %}style="background-image: url('{{ url_for('static', filename='images/epoche/' + epoche_image) }}');"{% endif %}>
+        <div class="epoche-header-overlay"></div>
+        <div class="epoche-header-content">
+            <h1 class="epoche-title">Epoche Storiche</h1>
+            <p class="epoche-subtitle">Esplora le diverse epoche storiche rappresentate nella nostra collezione</p>
+        </div>
+    </div>
+
+    <!-- Eras Grid -->
+    <div class="eras-grid">
+        {% for era in eras %}
+        <article class="era-card">
+            <a href="{{ url_for('era_detail', era_id=era.id) }}" class="era-card-link">
+                <div class="era-card-header">
+                    <h2 class="era-card-title">{{ era.name }}</h2>
+                    {% if era.year_start and era.year_end %}
+                    <p class="era-card-period">
+                        <span class="period-icon">📅</span>
+                        {{ era.year_start }} - {{ era.year_end }}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                {% if era.description %}
+                <p class="era-card-description">{{ era.description }}</p>
+                {% endif %}
+                
+                <div class="era-card-footer">
+                    <span class="era-card-cta">Esplora epoca →</span>
+                </div>
+            </a>
+        </article>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

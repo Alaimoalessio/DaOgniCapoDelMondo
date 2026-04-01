@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}{% if item %}{{ _('Modifica Oggetto') }}{% else %}{{ _('Nuovo Oggetto') }}{% endif %}{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="container">
+        <div class="admin-header">
+            <a href="{{ url_for('admin_items') }}" class="back-link">← {{ _('Torna agli Oggetti') }}</a>
+            <h1 class="section-title">{% if item %}{{ _('Modifica Oggetto') }}{% else %}{{ _('Nuovo Oggetto') }}{% endif %}</h1>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data" class="admin-form">
+            <div class="form-section">
+                <h2 class="form-section-title">{{ _('Informazioni Base') }}</h2>
+                
+                <div class="form-group">
+                    <label for="title" class="form-label">{{ _('Titolo') }} *</label>
+                    <input type="text" id="title" name="title" class="form-input" value="{{ item.title if item else '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">{{ _('Descrizione') }} *</label>
+                    <textarea id="description" name="description" class="form-textarea" rows="5" required>{{ item.description if item else '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="historical_context" class="form-label">{{ _('Contesto Storico') }}</label>
+                    <textarea id="historical_context" name="historical_context" class="form-textarea" rows="4">{{ item.historical_context if item else '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">{{ _('Classificazione') }}</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category_id" class="form-label">{{ _('Categoria') }}</label>
+                        <select id="category_id" name="category_id" class="form-input">
+                            <option value="">{{ _('Seleziona...') }}</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if item and item.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="region_id" class="form-label">{{ _('Regione') }}</label>
+                        <select id="region_id" name="region_id" class="form-input">
+                            <option value="">{{ _('Seleziona...') }}</option>
+                            {% for reg in regions %}
+                            <option value="{{ reg.id }}" {% if item and item.region_id == reg.id %}selected{% endif %}>{{ reg.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="era_id" class="form-label">{{ _('Epoca') }}</label>
+                        <select id="era_id" name="era_id" class="form-input">
+                            <option value="">{{ _('Seleziona...') }}</option>
+                            {% for era in eras %}
+                            <option value="{{ era.id }}" {% if item and item.era_id == era.id %}selected{% endif %}>{{ era.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="materials" class="form-label">{{ _('Materiali') }}</label>
+                    <select id="materials" name="materials" class="form-input" multiple size="5">
+                        {% for mat in materials %}
+                        <option value="{{ mat.id }}" {% if item and mat.id in selected_material_ids %}selected{% endif %}>{{ mat.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="form-help">{{ _('Tieni premuto Ctrl/Cmd per selezionare più materiali') }}</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">{{ _('Datazione e Provenienza') }}</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="year_from" class="form-label">{{ _('Anno da') }}</label>
+                        <input type="number" id="year_from" name="year_from" class="form-input" value="{{ item.year_from if item else '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year_to" class="form-label">{{ _('Anno a') }}</label>
+                        <input type="number" id="year_to" name="year_to" class="form-input" value="{{ item.year_to if item else '' }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="provenance" class="form-label">{{ _('Provenienza') }}</label>
+                    <input type="text" id="provenance" name="provenance" class="form-input" value="{{ item.provenance if item else '' }}">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">{{ _('Immagine') }}</h2>
+                
+                {% if item and item.image_url %}
+                <div class="current-image">
+                    <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" style="max-width: 300px; margin-bottom: 1rem;">
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="image" class="form-label">{{ _('Carica Immagine') }}</label>
+                    <input type="file" id="image" name="image" class="form-input" accept="image/*">
+                </div>
+
+                {% if item %}
+                <div class="form-group">
+                    <a href="{{ url_for('admin_item_images', item_id=item.id) }}" class="btn btn-secondary">{{ _('Gestisci Immagini Multiple') }}</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">{{ _('Conservazione e Acquisizione') }}</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="conservation_state" class="form-label">{{ _('Stato Conservazione') }}</label>
+                        <select id="conservation_state" name="conservation_state" class="form-input">
+                            <option value="">{{ _('Seleziona...') }}</option>
+                            <option value="Ottimo" {% if item and item.conservation_state == 'Ottimo' %}selected{% endif %}>Ottimo</option>
+                            <option value="Buono" {% if item and item.conservation_state == 'Buono' %}selected{% endif %}>Buono</option>
+                            <option value="Discreto" {% if item and item.conservation_state == 'Discreto' %}selected{% endif %}>Discreto</option>
+                            <option value="Restaurato" {% if item and item.conservation_state == 'Restaurato' %}selected{% endif %}>Restaurato</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="acquisition_date" class="form-label">{{ _('Data Acquisizione') }}</label>
+                        <input type="date" id="acquisition_date" name="acquisition_date" class="form-input" value="{{ item.acquisition_date.strftime('%Y-%m-%d') if item and item.acquisition_date else '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="acquisition_cost" class="form-label">{{ _('Costo Acquisizione (€)') }}</label>
+                        <input type="number" step="0.01" id="acquisition_cost" name="acquisition_cost" class="form-input" value="{{ item.acquisition_cost if item else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="form-section-title">{{ _('Note e Visibilità') }}</h2>
+                
+                <div class="form-group">
+                    <label for="notes" class="form-label">{{ _('Note Private') }}</label>
+                    <textarea id="notes" name="notes" class="form-textarea" rows="3">{{ item.notes if item else '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" name="is_visible" value="1" {% if item and item.is_visible %}checked{% elif not item %}checked{% endif %}>
+                        <span>{{ _('Visibile al pubblico') }}</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{{ _('Salva') }}</button>
+                <a href="{{ url_for('admin_items') }}" class="btn btn-outline">{{ _('Annulla') }}</a>
+                {% if item %}
+                <a href="{{ url_for('admin_item_valuations', item_id=item.id) }}" class="btn btn-secondary">{{ _('Valutazioni') }}</a>
+                <form method="POST" action="{{ url_for('admin_item_qrcode', item_id=item.id) }}" class="inline-form">
+                    <button type="submit" class="btn btn-secondary">{{ _('Genera QR Code') }}</button>
+                </form>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

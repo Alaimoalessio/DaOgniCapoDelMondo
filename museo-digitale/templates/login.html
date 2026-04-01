@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Login') }}{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="login-title">{{ _('Area Privata') }}</h1>
+                <p class="login-subtitle">{{ _('Accedi all\'area riservata per la famiglia') }}</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}" class="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">{{ _('Username') }}</label>
+                    <input type="text" id="username" name="username" class="form-input" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">{{ _('Password') }}</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" name="remember" value="1">
+                        <span>{{ _('Ricordami') }}</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">{{ _('Accedi') }}</button>
+            </form>
+
+            <div class="login-footer">
+                <a href="{{ url_for('home') }}" class="login-link">{{ _('Torna alla home') }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

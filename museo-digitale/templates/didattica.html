@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Didattica per Scuole{% endblock %}
+
+{% block content %}
+<div class="didattica-container">
+    <!-- Hero Section -->
+    <section class="didattica-hero">
+        <div class="container">
+            <h1 class="didattica-hero-title">Didattica per Scuole</h1>
+            <p class="didattica-hero-subtitle">
+                Scopri la nostra collezione attraverso percorsi didattici pensati per studenti di tutte le età
+            </p>
+        </div>
+    </section>
+
+    <!-- Why Section -->
+    <section class="didattica-section">
+        <div class="container">
+            <div class="didattica-content-grid">
+                <div class="didattica-text">
+                    <h2 class="section-heading">Perché la Nostra Collezione</h2>
+                    <p class="didattica-text-large">
+                        La nostra collezione privata offre un'opportunità unica per gli studenti di esplorare la storia, 
+                        le culture e le tradizioni del mondo attraverso oggetti autentici e rari.
+                    </p>
+                    <p>
+                        Ogni oggetto racconta una storia: da dove viene, chi lo ha creato, come è stato utilizzato. 
+                        Attraverso percorsi didattici strutturati, gli studenti possono:
+                    </p>
+                    <div class="didattica-features">
+                        <div class="feature-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            <span>Esplorare culture diverse da tutto il mondo</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            <span>Comprendere l'evoluzione storica attraverso oggetti reali</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            <span>Sviluppare capacità di osservazione e analisi</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            <span>Apprezzare la diversità e l'arte artigianale</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="didattica-visual">
+                    <div class="didattica-visual-card">
+                        <div class="visual-icon">📚</div>
+                        <p class="visual-text">
+                            I nostri percorsi didattici sono progettati per coinvolgere gli studenti attraverso 
+                            attività interattive, quiz e materiali di supporto.
+                        </p>
+                        <a href="{{ url_for('percorsi') }}" class="btn-visual">Esplora i Percorsi →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Percorsi Preview Section -->
+    <section class="didattica-section didattica-section-alt">
+        <div class="container">
+            <h2 class="section-heading section-heading-centered">Percorsi Didattici</h2>
+            <p class="section-subtitle-centered">
+                Percorsi strutturati per diverse fasce d'età, dalla scuola primaria alle superiori
+            </p>
+            
+            <div class="percorsi-preview-grid">
+                <div class="percorso-preview-card">
+                    <div class="percorso-preview-icon">🛡️</div>
+                    <h3>Viaggio nel Tempo</h3>
+                    <p class="percorso-preview-age">Scuola Primaria (6-10 anni)</p>
+                    <p class="percorso-preview-desc">Armature, elmi e copricapi attraverso la storia</p>
+                    <a href="{{ url_for('percorso_detail', percorso_id=1) }}" class="btn-secondary">Scopri →</a>
+                </div>
+                
+                <div class="percorso-preview-card">
+                    <div class="percorso-preview-icon">🌍</div>
+                    <h3>Culture del Mondo</h3>
+                    <p class="percorso-preview-age">Scuola Media (11-13 anni)</p>
+                    <p class="percorso-preview-desc">Tradizioni e simboli di culture diverse</p>
+                    <a href="{{ url_for('percorso_detail', percorso_id=2) }}" class="btn-secondary">Scopri →</a>
+                </div>
+                
+                <div class="percorso-preview-card">
+                    <div class="percorso-preview-icon">🎨</div>
+                    <h3>Arte e Artigianato</h3>
+                    <p class="percorso-preview-age">Scuola Superiore (14-18 anni)</p>
+                    <p class="percorso-preview-desc">Materiali, tecniche e maestria artigianale</p>
+                    <a href="{{ url_for('percorso_detail', percorso_id=3) }}" class="btn-secondary">Scopri →</a>
+                </div>
+                
+                <div class="percorso-preview-card">
+                    <div class="percorso-preview-icon">⚔️</div>
+                    <h3>Storia Militare</h3>
+                    <p class="percorso-preview-age">Scuola Superiore (14-18 anni)</p>
+                    <p class="percorso-preview-desc">Armi, armature e strategie attraverso i secoli</p>
+                    <a href="{{ url_for('percorso_detail', percorso_id=4) }}" class="btn-secondary">Scopri →</a>
+                </div>
+            </div>
+            
+            <div class="didattica-cta">
+                <a href="{{ url_for('percorsi') }}" class="btn-primary">Vedi Tutti i Percorsi →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Materiali Section -->
+    <section class="didattica-section">
+        <div class="container">
+            <div class="didattica-content-grid didattica-content-reverse">
+                <div class="didattica-text">
+                    <h2 class="section-heading">Materiali per Insegnanti</h2>
+                    <p class="didattica-text-large">
+                        Offriamo materiali didattici completi per supportare gli insegnanti nella preparazione 
+                        delle visite e delle attività in classe.
+                    </p>
+                    <p>
+                        Schede didattiche, guide per i percorsi, domande di riflessione e bibliografia 
+                        per approfondimenti. Tutti i materiali sono disponibili nell'area riservata.
+                    </p>
+                    <a href="{{ url_for('insegnanti') }}" class="btn-secondary">Accedi all'Area Insegnanti →</a>
+                </div>
+                <div class="didattica-visual">
+                    <div class="didattica-visual-card">
+                        <div class="visual-icon">📄</div>
+                        <p class="visual-text">
+                            Schede PDF scaricabili, guide complete e risorse aggiuntive 
+                            per arricchire l'esperienza didattica.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="didattica-section didattica-section-alt">
+        <div class="container">
+            <h2 class="section-heading section-heading-centered">Timeline Interattiva</h2>
+            <p class="section-subtitle-centered">
+                Esplora la collezione attraverso una timeline cronologica interattiva
+            </p>
+            <div class="didattica-timeline-preview">
+                <p>Naviga attraverso i secoli e scopri come gli oggetti si sono evoluti nel tempo, 
+                dalle armature medievali ai copricapi moderni.</p>
+                <a href="{{ url_for('timeline_didattica') }}" class="btn-primary">Esplora Timeline →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prenotazione Section -->
+    <section class="didattica-section didattica-prenotazione">
+        <div class="container">
+            <h2 class="section-heading section-heading-centered">Prenota una Visita</h2>
+            <p class="section-subtitle-centered">
+                Organizziamo visite guidate e incontri didattici per scuole e gruppi
+            </p>
+            <div class="prenotazione-info">
+                <div class="prenotazione-card">
+                    <div class="prenotazione-icon">📅</div>
+                    <h3>Visite Guidate</h3>
+                    <p>Visite guidate personalizzate in base all'età degli studenti e agli obiettivi didattici</p>
+                </div>
+                <div class="prenotazione-card">
+                    <div class="prenotazione-icon">🏛️</div>
+                    <h3>Incontri nelle Scuole</h3>
+                    <p>Possibilità di organizzare incontri direttamente nelle scuole con oggetti selezionati</p>
+                </div>
+                <div class="prenotazione-card">
+                    <div class="prenotazione-icon">💬</div>
+                    <h3>Contattaci</h3>
+                    <p>Per informazioni e prenotazioni, contattaci attraverso il form di contatto</p>
+                    <a href="{{ url_for('contact') }}" class="btn-secondary">Contattaci →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+

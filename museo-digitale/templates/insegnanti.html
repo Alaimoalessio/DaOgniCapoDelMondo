@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Area Insegnanti - Didattica{% endblock %}
+
+{% block content %}
+<div class="insegnanti-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{{ url_for('didattica') }}">Didattica</a>
+        <span class="separator">›</span>
+        <span>Area Insegnanti</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="insegnanti-header">
+        <h1 class="insegnanti-title">Area Insegnanti</h1>
+        <p class="insegnanti-subtitle">
+            Materiali didattici, guide e risorse per supportare la preparazione delle visite
+        </p>
+    </div>
+
+    <!-- Materials Grid -->
+    <div class="insegnanti-materials-grid">
+        <div class="material-card">
+            <div class="material-icon">📄</div>
+            <h3>Schede Didattiche</h3>
+            <p>Schede PDF scaricabili per ogni percorso didattico, con informazioni dettagliate sugli oggetti e attività proposte.</p>
+            <div class="material-files">
+                <a href="#" class="material-file-link">Scheda - Viaggio nel Tempo (PDF)</a>
+                <a href="#" class="material-file-link">Scheda - Culture del Mondo (PDF)</a>
+                <a href="#" class="material-file-link">Scheda - Arte e Artigianato (PDF)</a>
+                <a href="#" class="material-file-link">Scheda - Storia Militare (PDF)</a>
+            </div>
+        </div>
+
+        <div class="material-card">
+            <div class="material-icon">📚</div>
+            <h3>Guide per i Percorsi</h3>
+            <p>Guide complete per insegnanti con obiettivi didattici, domande di riflessione e suggerimenti per attività in classe.</p>
+            <div class="material-files">
+                <a href="#" class="material-file-link">Guida Completa Didattica (PDF)</a>
+                <a href="#" class="material-file-link">Domande di Riflessione (PDF)</a>
+                <a href="#" class="material-file-link">Attività Pre-Visita (PDF)</a>
+            </div>
+        </div>
+
+        <div class="material-card">
+            <div class="material-icon">📖</div>
+            <h3>Bibliografia e Risorse</h3>
+            <p>Risorse bibliografiche e link utili per approfondimenti su storia, cultura e artigianato.</p>
+            <div class="material-files">
+                <a href="#" class="material-file-link">Bibliografia Consigliata (PDF)</a>
+                <a href="#" class="material-file-link">Risorse Online (PDF)</a>
+            </div>
+        </div>
+
+        <div class="material-card">
+            <div class="material-icon">🎯</div>
+            <h3>Obiettivi Didattici</h3>
+            <p>Documento dettagliato sugli obiettivi didattici per ogni percorso, allineati con i programmi scolastici.</p>
+            <div class="material-files">
+                <a href="#" class="material-file-link">Obiettivi per Scuola Primaria (PDF)</a>
+                <a href="#" class="material-file-link">Obiettivi per Scuola Media (PDF)</a>
+                <a href="#" class="material-file-link">Obiettivi per Scuola Superiore (PDF)</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="insegnanti-contact">
+        <div class="contact-card">
+            <h2>Hai bisogno di supporto?</h2>
+            <p>Per domande, richieste di materiali personalizzati o informazioni sulle visite, contattaci.</p>
+            <a href="{{ url_for('contact') }}" class="btn-primary">Contattaci →</a>
+        </div>
+    </section>
+
+    <!-- Back Button -->
+    <div class="insegnanti-actions">
+        <a href="{{ url_for('didattica') }}" class="btn-secondary">← Torna alla Didattica</a>
+    </div>
+</div>
+{% endblock %}
+

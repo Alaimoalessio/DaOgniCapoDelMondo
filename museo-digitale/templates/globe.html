@@ -1,0 +1,523 @@
+{% extends "base.html" %}
+
+{% block title %}Esplora il Mondo{% endblock %}
+
+{% block head %}
+<style>
+    /* Globe page specific styles - Modern 2025 */
+    .globe-container {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 120px);
+        background: var(--bg-primary);
+        background-image: 
+            radial-gradient(at 20% 30%, rgba(232, 213, 163, 0.08) 0px, transparent 50%),
+            radial-gradient(at 80% 70%, rgba(232, 213, 163, 0.05) 0px, transparent 50%);
+        overflow: hidden;
+    }
+
+    #globeViz {
+        width: 100%;
+        height: 100%;
+    }
+
+    .globe-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: var(--spacing-xl);
+        background: linear-gradient(to bottom, rgba(10, 10, 10, 0.95), transparent);
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .globe-title {
+        font-size: 3.5rem;
+        margin-bottom: var(--spacing-md);
+        color: var(--text-primary);
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        text-shadow: 0 2px 20px rgba(232, 213, 163, 0.1);
+    }
+
+    .globe-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.125rem;
+        max-width: 600px;
+        line-height: 1.6;
+    }
+
+    .globe-info {
+        position: absolute;
+        bottom: var(--spacing-xl);
+        left: var(--spacing-xl);
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: var(--spacing-lg);
+        max-width: 320px;
+        z-index: 10;
+        box-shadow: var(--shadow-lg);
+        transition: all var(--transition-medium);
+    }
+
+    .globe-info:hover {
+        border-color: var(--accent-gold);
+        box-shadow: var(--shadow-glow);
+    }
+
+    .info-title {
+        font-size: 0.875rem;
+        background: var(--gradient-gold);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        margin-bottom: var(--spacing-sm);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .info-text {
+        font-size: 0.9375rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    /* Sidebar for selected region */
+    .region-sidebar {
+        position: absolute;
+        right: -420px;
+        top: 0;
+        width: 420px;
+        height: 100%;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-left: 1px solid var(--border-color);
+        padding: var(--spacing-xl);
+        overflow-y: auto;
+        z-index: 100;
+        transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .region-sidebar.active {
+        right: 0;
+        border-left-color: var(--accent-gold);
+    }
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .sidebar-title {
+        font-size: 2rem;
+        background: var(--gradient-hero);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+        font-weight: 900;
+    }
+
+    .sidebar-close {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all var(--transition-fast);
+    }
+
+    .sidebar-close:hover {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+    }
+
+    .sidebar-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-lg);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .stat-box {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        padding: var(--spacing-md);
+        border-radius: 16px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-medium);
+    }
+
+    .stat-box:hover {
+        border-color: var(--accent-turquoise);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-turquoise);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: var(--gradient-turquoise);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: var(--font-serif);
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        margin-top: var(--spacing-xs);
+    }
+
+    .region-items {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .region-item-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all var(--transition-medium);
+        cursor: pointer;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .region-item-card:hover {
+        border-color: var(--accent-gold);
+        transform: translateX(-6px) translateY(-2px);
+        box-shadow: var(--shadow-glow);
+    }
+
+    .region-item-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .region-item-content {
+        padding: var(--spacing-sm);
+    }
+
+    .region-item-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .region-item-meta {
+        display: flex;
+        gap: var(--spacing-xs);
+        flex-wrap: wrap;
+    }
+
+    /* Loading state */
+    .globe-loading {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-primary);
+        z-index: 1000;
+        transition: opacity 0.5s ease;
+    }
+
+    .globe-loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid var(--border-color);
+        border-top-color: var(--accent-gold);
+        border-right-color: var(--accent-turquoise);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        box-shadow: 0 0 20px rgba(232, 213, 163, 0.25);
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loading-text {
+        margin-top: var(--spacing-md);
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .globe-overlay {
+            padding: var(--spacing-md);
+        }
+
+        .globe-title {
+            font-size: 1.75rem;
+        }
+
+        .globe-info {
+            bottom: var(--spacing-sm);
+            left: var(--spacing-sm);
+            right: var(--spacing-sm);
+            max-width: none;
+        }
+
+        .region-sidebar {
+            width: 100%;
+            right: -100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="globe-container">
+    <!-- Loading State -->
+    <div class="globe-loading" id="globeLoading">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Caricamento del globo terrestre...</p>
+    </div>
+
+    <!-- Globe Overlay Info -->
+    <div class="globe-overlay">
+        <h1 class="globe-title">Esplora il Mondo</h1>
+        <p class="globe-subtitle">
+            Ruota il globo e clicca sui punti luminosi per scoprire gli oggetti della collezione provenienti da quella
+            regione.
+        </p>
+    </div>
+
+    <!-- Globe Visualization -->
+    <div id="globeViz"></div>
+
+    <!-- Info Box -->
+    <div class="globe-info">
+        <div class="info-title">Come Navigare</div>
+        <div class="info-text">
+            • Trascina per ruotare il globo<br>
+            • Scroll per zoom<br>
+            • Clicca sui marker dorati per esplorare<br>
+            • <span style="color: var(--accent-gold);">{{ total_items }}</span> oggetti da <span
+                style="color: var(--accent-turquoise);">{{ total_regions }}</span> regioni
+        </div>
+    </div>
+
+    <!-- Region Sidebar -->
+    <div class="region-sidebar" id="regionSidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title" id="sidebarRegionName">Regione</h2>
+            <button class="sidebar-close" id="closeSidebar" aria-label="Chiudi">×</button>
+        </div>
+
+        <div class="sidebar-stats">
+            <div class="stat-box">
+                <div class="stat-number" id="sidebarItemCount">0</div>
+                <div class="stat-label">Oggetti</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="sidebarEraCount">0</div>
+                <div class="stat-label">Epoche</div>
+            </div>
+        </div>
+
+        <div class="region-items" id="regionItemsList">
+            <!-- Items will be populated here via JS -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Globe.GL Library -->
+<script src="//unpkg.com/globe.gl"></script>
+
+<script>
+    // Region data with coordinates
+    const regionData = {{ region_data | tojson | safe }};
+
+    // Globe configuration and initialization
+    (function () {
+        'use strict';
+
+        // Initialize Globe with modern 2025 styling
+        const globe = Globe()(document.getElementById('globeViz'))
+            .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+            .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+            .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+            .showAtmosphere(true)
+            .atmosphereColor('#00D9FF')
+            .atmosphereAltitude(0.2);
+
+        // Configure camera
+        globe.pointOfView({ lat: 20, lng: 0, altitude: 2.5 });
+
+        // Add points for each region with items - Modern 2025 styling
+        const points = regionData.map(region => ({
+            lat: region.lat,
+            lng: region.lng,
+            size: 1.5 + (region.item_count * 0.2),  // Increased base size for better visibility
+            color: '#E8D5A3',
+            label: `${region.name} (${region.item_count} oggetti)`,
+            region: region
+        }));
+
+        console.log('Setting up globe with', points.length, 'points:', points);
+
+        // Configure points on the globe
+        globe
+            .pointsData(points)
+            .pointLat('lat')
+            .pointLng('lng')
+            .pointAltitude(0.05)  // Increased altitude so points are clearly above surface
+            .pointRadius('size')
+            .pointColor('color')
+            .pointLabel('label')
+            .pointsMerge(true)
+            .pointsTransitionDuration(1000);
+
+        // Add click handler
+        globe.onPointClick((point) => {
+            console.log('🎯 Point clicked!', point);
+            if (point && point.region) {
+                showRegionSidebar(point.region);
+
+                // Rotate globe to focus on clicked point
+                globe.pointOfView({
+                    lat: point.lat,
+                    lng: point.lng,
+                    altitude: 1.5
+                }, 1000);
+            } else {
+                console.warn('Point clicked but no region data:', point);
+            }
+        });
+
+        // Add hover handler
+        globe.onPointHover((point) => {
+            const globeViz = document.getElementById('globeViz');
+            if (globeViz) {
+                globeViz.style.cursor = point ? 'pointer' : 'grab';
+            }
+            if (point) {
+                console.log('Hovering over:', point.label);
+            }
+        });
+
+        // Add arcs connecting regions - Enhanced modern styling with gradient
+        const arcsData = [];
+        for (let i = 0; i < points.length - 1; i++) {
+            arcsData.push({
+                startLat: points[i].lat,
+                startLng: points[i].lng,
+                endLat: points[i + 1].lat,
+                endLng: points[i + 1].lng,
+                color: ['rgba(232, 213, 163, 0.3)', 'rgba(232, 213, 163, 0.2)']  // Elegant museum colors
+            });
+        }
+
+        globe.arcsData(arcsData)
+            .arcColor('color')
+            .arcDashLength(0.5)
+            .arcDashGap(0.3)
+            .arcDashAnimateTime(4000)
+            .arcStroke(1.0)
+            .arcsTransitionDuration(1000);
+
+        // Auto-rotate
+        globe.controls().autoRotate = true;
+        globe.controls().autoRotateSpeed = 0.3;
+
+        // Hide loading screen
+        setTimeout(() => {
+            document.getElementById('globeLoading').classList.add('hidden');
+        }, 1500);
+
+        // Sidebar functionality
+        const sidebar = document.getElementById('regionSidebar');
+        const closeSidebarBtn = document.getElementById('closeSidebar');
+
+        function showRegionSidebar(region) {
+            // Stop auto-rotate when viewing region
+            globe.controls().autoRotate = false;
+
+            // Update sidebar content
+            document.getElementById('sidebarRegionName').textContent = region.name;
+            document.getElementById('sidebarItemCount').textContent = region.item_count;
+            document.getElementById('sidebarEraCount').textContent = region.unique_eras;
+
+            // Populate items
+            const itemsList = document.getElementById('regionItemsList');
+            itemsList.innerHTML = region.items.map(item => `
+                <a href="/item/${item.id}" class="region-item-card">
+                    <img src="${item.image_url.startsWith('http') ? item.image_url : '/static/' + item.image_url}" alt="${item.title}" class="region-item-image">
+                    <div class="region-item-content">
+                        <h3 class="region-item-title">${item.title}</h3>
+                        <div class="region-item-meta">
+                            ${item.category ? `<span class="badge badge-category">${item.category}</span>` : ''}
+                            ${item.era ? `<span class="badge badge-era">${item.era}</span>` : ''}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+
+            // Show sidebar
+            sidebar.classList.add('active');
+        }
+
+        function hideSidebar() {
+            sidebar.classList.remove('active');
+            // Resume auto-rotate
+            globe.controls().autoRotate = true;
+        }
+
+        closeSidebarBtn.addEventListener('click', hideSidebar);
+
+        // Close sidebar with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+                hideSidebar();
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            globe.width(window.innerWidth);
+            globe.height(window.innerHeight - 120);
+        });
+    })();
+</script>
+{% endblock %}

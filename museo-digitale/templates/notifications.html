@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Notifiche') }}{% endblock %}
+
+{% block content %}
+<div class="notifications-container">
+    <div class="container">
+        <div class="notifications-header">
+            <a href="{{ url_for('area_privata') }}" class="back-link">← {{ _('Torna all\'Area Privata') }}</a>
+            <h1 class="section-title">{{ _('Notifiche') }}</h1>
+        </div>
+
+        {% if notifications %}
+            <div class="notifications-list">
+                {% for notification in notifications %}
+                <div class="notification-card {% if not notification.is_read %}notification-unread{% endif %}">
+                    <div class="notification-content">
+                        <h3>{{ notification.title }}</h3>
+                        <p>{{ notification.message }}</p>
+                        <span class="notification-date">{{ notification.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                    </div>
+                    <div class="notification-actions">
+                        {% if not notification.is_read %}
+                        <form method="POST" action="{{ url_for('notification_read', notification_id=notification.id) }}" class="inline-form">
+                            <button type="submit" class="btn btn-secondary btn-small">{{ _('Segna come letta') }}</button>
+                        </form>
+                        {% endif %}
+                        {% if notification.related_item %}
+                        <a href="{{ url_for('item_detail', item_id=notification.related_item_id) }}" class="btn btn-outline btn-small">{{ _('Vedi Oggetto') }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">{{ _('Nessuna notifica.') }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

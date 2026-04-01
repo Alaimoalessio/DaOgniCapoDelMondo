@@ -1,0 +1,14 @@
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-Babel==3.1.0
+python-dotenv==1.0.0
+Werkzeug==3.1.4
+Pillow>=12.1.0
+reportlab==4.0.7
+qrcode==7.4.2
+
+
+# Optional for Production
+# psycopg2-binary==2.9.9
+# gunicorn==21.2.0

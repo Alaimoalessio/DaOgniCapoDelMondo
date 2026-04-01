@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}Collezione Completa{% endblock %}
+
+{% block content %}
+<div class="museum-gallery-container">
+    <!-- Top Filter Bar -->
+    <div class="filter-bar">
+        <form id="filterForm" action="{{ url_for('filter_items') }}" method="get" class="filter-form">
+                <!-- Category Dropdown -->
+                <div class="filter-dropdown">
+                    <button type="button" class="filter-dropdown-btn" data-dropdown="category">
+                        <svg class="filter-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                        </svg>
+                        <span class="filter-label">Categoria</span>
+                        <span class="filter-selected" id="category-selected">
+                            {% if active_filters and active_filters.category %}
+                                {% for cat in categories %}
+                                    {% if cat.id == active_filters.category %}{{ cat.name }}{% endif %}
+                                {% endfor %}
+                            {% else %}Tutte{% endif %}
+                        </span>
+                        <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="filter-dropdown-menu" id="category-menu">
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="" {% if not active_filters or not active_filters.category %}checked{% endif %}>
+                            <span>Tutte</span>
+                        </label>
+                        {% for category in categories %}
+                        <label class="filter-option">
+                            <input type="radio" name="category" value="{{ category.id }}" {% if active_filters and active_filters.category==category.id %}checked{% endif %}>
+                            <span>{{ category.name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Region Dropdown -->
+                <div class="filter-dropdown">
+                    <button type="button" class="filter-dropdown-btn" data-dropdown="region">
+                        <svg class="filter-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                        </svg>
+                        <span class="filter-label">Regione</span>
+                        <span class="filter-selected" id="region-selected">
+                            {% if active_filters and active_filters.region %}
+                                {% for reg in regions %}
+                                    {% if reg.id == active_filters.region %}{{ reg.name }}{% endif %}
+                                {% endfor %}
+                            {% else %}Tutte{% endif %}
+                        </span>
+                        <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="filter-dropdown-menu" id="region-menu">
+                        <label class="filter-option">
+                            <input type="radio" name="region" value="" {% if not active_filters or not active_filters.region %}checked{% endif %}>
+                            <span>Tutte</span>
+                        </label>
+                        {% for region in regions %}
+                        <label class="filter-option">
+                            <input type="radio" name="region" value="{{ region.id }}" {% if active_filters and active_filters.region==region.id %}checked{% endif %}>
+                            <span>{{ region.name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Era Dropdown -->
+                <div class="filter-dropdown">
+                    <button type="button" class="filter-dropdown-btn" data-dropdown="era">
+                        <svg class="filter-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span class="filter-label">Epoca</span>
+                        <span class="filter-selected" id="era-selected">
+                            {% if active_filters and active_filters.era %}
+                                {% for e in eras %}
+                                    {% if e.id == active_filters.era %}{{ e.name }}{% endif %}
+                                {% endfor %}
+                            {% else %}Tutte{% endif %}
+                        </span>
+                        <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="filter-dropdown-menu" id="era-menu">
+                        <label class="filter-option">
+                            <input type="radio" name="era" value="" {% if not active_filters or not active_filters.era %}checked{% endif %}>
+                            <span>Tutte</span>
+                        </label>
+                        {% for era in eras %}
+                        <label class="filter-option">
+                            <input type="radio" name="era" value="{{ era.id }}" {% if active_filters and active_filters.era==era.id %}checked{% endif %}>
+                            <span>{{ era.name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-filter-apply">Applica</button>
+                <a href="{{ url_for('collezione') }}" class="btn-filter-reset">Reset</a>
+            </form>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar-container">
+        <div class="container">
+            <form method="GET" action="{{ url_for('collezione') }}" class="search-form">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input type="text" name="q" value="{{ search_query }}" placeholder="{{ _('Cerca oggetti, descrizioni, provenienza...') }}" class="search-input">
+                    {% if search_query %}
+                    <a href="{{ url_for('collezione') }}" class="search-clear" title="{{ _('Cancella ricerca') }}">×</a>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn-search">{{ _('Cerca') }}</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gallery Header -->
+    <div class="gallery-header">
+        <div class="container">
+            <h2 class="section-title">{{ _('Collezione Completa') }}</h2>
+            {% if search_query %}
+            <p class="search-results-info">
+                {{ _('Risultati per') }} "<strong>{{ search_query }}</strong>": 
+                <span class="item-count">{{ pagination.total if pagination else items|length }} {{ _('oggetti') }}</span>
+            </p>
+            {% else %}
+            <p class="item-count">
+                {% if pagination %}
+                    {{ _('Mostrando') }} {{ ((pagination.page - 1) * pagination.per_page) + 1 }}-{{ ((pagination.page - 1) * pagination.per_page) + items|length }} {{ _('di') }} {{ pagination.total }} {{ _('oggetti') }}
+                {% else %}
+                    {{ items|length }} {{ _('oggetti') }}
+                {% endif %}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Museum Gallery Grid -->
+    <div class="museum-grid" id="galleryGrid">
+        {% for item in items %}
+        <article class="museum-item">
+            <a href="{{ url_for('item_detail', item_id=item.id) }}" class="museum-item-link">
+                <div class="museum-image-wrapper">
+                    <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy" class="museum-image">
+                    <div class="museum-overlay">
+                        <div class="museum-overlay-content">
+                            <h3 class="museum-item-title">{{ item.title }}</h3>
+                            <div class="museum-item-meta">
+                                {% if item.region %}
+                                <span class="badge badge-region">{{ item.region.name }}</span>
+                                {% endif %}
+                                {% if item.era %}
+                                <span class="badge badge-era">{{ item.era.name }}</span>
+                                {% endif %}
+                                {% if item.category %}
+                                <span class="badge badge-category">{{ item.category.name }}</span>
+                                {% endif %}
+                            </div>
+                            {% if item.description %}
+                            <p class="museum-item-description">{{ item.description[:150] }}{% if item.description|length > 150 %}...{% endif %}</p>
+                            {% endif %}
+                            <span class="museum-view-details">Clicca per dettagli →</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </article>
+        {% endfor %}
+    </div>
+
+    <!-- Enhanced Pagination -->
+    {% if pagination and pagination.pages > 1 %}
+    <div class="pagination-enhanced">
+        <div class="container">
+            <div class="pagination-wrapper">
+                <!-- First Page -->
+                {% if pagination.page > 1 %}
+                <a href="{{ url_for('collezione', page=1, q=search_query) }}" class="pagination-btn pagination-first" title="{{ _('Prima pagina') }}">
+                    <span>«</span>
+                </a>
+                {% else %}
+                <span class="pagination-btn pagination-first disabled"><span>«</span></span>
+                {% endif %}
+
+                <!-- Previous Page -->
+                {% if pagination.has_prev %}
+                <a href="{{ url_for('collezione', page=pagination.prev_num, q=search_query) }}" class="pagination-btn pagination-prev" title="{{ _('Pagina precedente') }}">
+                    <span>‹</span>
+                </a>
+                {% else %}
+                <span class="pagination-btn pagination-prev disabled"><span>‹</span></span>
+                {% endif %}
+
+                <!-- Page Numbers -->
+                <div class="pagination-numbers">
+                    {% set start_page = [1, pagination.page - 2]|max %}
+                    {% set end_page = [pagination.pages, pagination.page + 2]|min %}
+                    
+                    {% if start_page > 1 %}
+                        <a href="{{ url_for('collezione', page=1, q=search_query) }}" class="pagination-number">1</a>
+                        {% if start_page > 2 %}
+                        <span class="pagination-ellipsis">...</span>
+                        {% endif %}
+                    {% endif %}
+                    
+                    {% for page_num in range(start_page, end_page + 1) %}
+                        {% if page_num == pagination.page %}
+                        <span class="pagination-number active">{{ page_num }}</span>
+                        {% else %}
+                        <a href="{{ url_for('collezione', page=page_num, q=search_query) }}" class="pagination-number">{{ page_num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if end_page < pagination.pages %}
+                        {% if end_page < pagination.pages - 1 %}
+                        <span class="pagination-ellipsis">...</span>
+                        {% endif %}
+                        <a href="{{ url_for('collezione', page=pagination.pages, q=search_query) }}" class="pagination-number">{{ pagination.pages }}</a>
+                    {% endif %}
+                </div>
+
+                <!-- Next Page -->
+                {% if pagination.has_next %}
+                <a href="{{ url_for('collezione', page=pagination.next_num, q=search_query) }}" class="pagination-btn pagination-next" title="{{ _('Pagina successiva') }}">
+                    <span>›</span>
+                </a>
+                {% else %}
+                <span class="pagination-btn pagination-next disabled"><span>›</span></span>
+                {% endif %}
+
+                <!-- Last Page -->
+                {% if pagination.page < pagination.pages %}
+                <a href="{{ url_for('collezione', page=pagination.pages, q=search_query) }}" class="pagination-btn pagination-last" title="{{ _('Ultima pagina') }}">
+                    <span>»</span>
+                </a>
+                {% else %}
+                <span class="pagination-btn pagination-last disabled"><span>»</span></span>
+                {% endif %}
+            </div>
+
+            <!-- Page Info -->
+            <div class="pagination-info">
+                <span>{{ _('Pagina') }} {{ pagination.page }} {{ _('di') }} {{ pagination.pages }}</span>
+                <span class="pagination-separator">|</span>
+                <span>{{ pagination.total }} {{ _('oggetti totali') }}</span>
+            </div>
+
+            <!-- Jump to Page -->
+            <div class="pagination-jump">
+                <label for="jump-to-page">{{ _('Vai a pagina:') }}</label>
+                <input type="number" id="jump-to-page" min="1" max="{{ pagination.pages }}" value="{{ pagination.page }}" class="pagination-jump-input">
+                <button type="button" class="pagination-jump-btn" onclick="jumpToPage()">{{ _('Vai') }}</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

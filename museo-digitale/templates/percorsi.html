@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Percorsi Didattici{% endblock %}
+
+{% block content %}
+<div class="percorsi-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{{ url_for('didattica') }}">Didattica</a>
+        <span class="separator">›</span>
+        <span>Percorsi</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="percorsi-header">
+        <h1 class="percorsi-title">Percorsi Didattici</h1>
+        <p class="percorsi-subtitle">
+            Percorsi strutturati per diverse fasce d'età, dalla scuola primaria alle superiori
+        </p>
+    </div>
+
+    <!-- Percorsi Grid -->
+    <div class="percorsi-grid">
+        {% for percorso in percorsi %}
+        <article class="percorso-card percorso-card-{{ percorso.color }}">
+            <a href="{{ url_for('percorso_detail', percorso_id=percorso.id) }}" class="percorso-card-link">
+                <div class="percorso-card-header">
+                    <div class="percorso-card-icon">{{ percorso.icon }}</div>
+                    <div class="percorso-card-badge">{{ percorso.age_group }}</div>
+                </div>
+                
+                <div class="percorso-card-content">
+                    <h2 class="percorso-card-title">{{ percorso.title }}</h2>
+                    <p class="percorso-card-age">{{ percorso.age_range }} • {{ percorso.duration }}</p>
+                    <p class="percorso-card-description">{{ percorso.description }}</p>
+                </div>
+                
+                <div class="percorso-card-footer">
+                    <span class="percorso-card-cta">Scopri il percorso →</span>
+                </div>
+            </a>
+        </article>
+        {% endfor %}
+    </div>
+
+    <!-- Back Button -->
+    <div class="percorsi-actions">
+        <a href="{{ url_for('didattica') }}" class="btn-secondary">← Torna alla Didattica</a>
+    </div>
+</div>
+{% endblock %}
+

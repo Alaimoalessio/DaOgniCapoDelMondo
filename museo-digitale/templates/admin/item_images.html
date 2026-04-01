@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Gestisci Immagini') }} - {{ item.title }}{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="container">
+        <div class="admin-header">
+            <a href="{{ url_for('admin_item_edit', item_id=item.id) }}" class="back-link">← {{ _('Torna all\'Oggetto') }}</a>
+            <h1 class="section-title">{{ _('Gestisci Immagini') }}: {{ item.title }}</h1>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data" class="admin-form">
+            <div class="form-section">
+                <h2 class="form-section-title">{{ _('Carica Nuove Immagini') }}</h2>
+                
+                <div class="form-group">
+                    <label for="images" class="form-label">{{ _('Seleziona Immagini') }}</label>
+                    <input type="file" id="images" name="images" class="form-input" accept="image/*" multiple>
+                    <small class="form-help">{{ _('Puoi selezionare più immagini contemporaneamente') }}</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="caption" class="form-label">{{ _('Didascalia (per tutte le immagini)') }}</label>
+                    <input type="text" id="caption" name="caption" class="form-input">
+                </div>
+
+                <button type="submit" class="btn btn-primary">{{ _('Carica Immagini') }}</button>
+            </div>
+        </form>
+
+        <div class="images-grid">
+            <h2 class="section-subtitle">{{ _('Immagini Esistenti') }}</h2>
+            {% if item.images %}
+                <div class="images-list">
+                    {% for img in item.images %}
+                    <div class="image-card {% if img.is_primary %}image-primary{% endif %}">
+                        <img src="{{ img.image_url|image_url }}" alt="{{ img.caption or item.title }}">
+                        <div class="image-info">
+                            {% if img.caption %}<p>{{ img.caption }}</p>{% endif %}
+                            {% if img.is_primary %}<span class="primary-badge">{{ _('Principale') }}</span>{% endif %}
+                        </div>
+                        <div class="image-actions">
+                            {% if not img.is_primary %}
+                            <form method="POST" action="{{ url_for('admin_item_image_set_primary', item_id=item.id, image_id=img.id) }}" class="inline-form">
+                                <button type="submit" class="btn btn-secondary btn-small">{{ _('Imposta Principale') }}</button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('admin_item_image_delete', item_id=item.id, image_id=img.id) }}" class="inline-form" onsubmit="return confirm('{{ _('Sei sicuro?') }}');">
+                                <button type="submit" class="btn btn-danger btn-small">{{ _('Elimina') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-state">{{ _('Nessuna immagine caricata.') }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

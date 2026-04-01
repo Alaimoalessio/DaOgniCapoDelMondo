@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Area Privata') }}{% endblock %}
+
+{% block content %}
+<div class="private-area-container">
+    <div class="container">
+        <div class="private-area-header">
+            <h1 class="section-title">{{ _('Area Privata') }}</h1>
+            <p class="section-subtitle">{{ _('Benvenuto,') }} {{ current_user.username }}</p>
+        </div>
+
+        <div class="private-area-grid">
+            <!-- Statistics Card -->
+            <div class="private-card">
+                <div class="private-card-header">
+                    <h2 class="private-card-title">{{ _('Statistiche') }}</h2>
+                </div>
+                <div class="private-card-content">
+                    <div class="stat-item">
+                        <span class="stat-label">{{ _('Oggetti totali') }}</span>
+                        <span class="stat-value">{{ total_items }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">{{ _('Note private') }}</span>
+                        <span class="stat-value">{{ user_notes|length }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">{{ _('Prestiti attivi') }}</span>
+                        <span class="stat-value">{{ active_loans|length }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Notes Card -->
+            <div class="private-card">
+                <div class="private-card-header">
+                    <h2 class="private-card-title">{{ _('Note Recenti') }}</h2>
+                </div>
+                <div class="private-card-content">
+                    {% if user_notes %}
+                        <ul class="notes-list">
+                            {% for note in user_notes %}
+                            <li class="note-item">
+                                <a href="{{ url_for('item_detail', item_id=note.item_id) }}" class="note-link">
+                                    <span class="note-item-title">{{ note.item.title }}</span>
+                                    <span class="note-preview">{{ note.note[:100] }}{% if note.note|length > 100 %}...{% endif %}</span>
+                                    <span class="note-date">{{ note.updated_at.strftime('%d/%m/%Y') }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="empty-state">{{ _('Nessuna nota ancora.') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Active Loans Card -->
+            <div class="private-card">
+                <div class="private-card-header">
+                    <h2 class="private-card-title">{{ _('Prestiti Attivi') }}</h2>
+                </div>
+                <div class="private-card-content">
+                    {% if active_loans %}
+                        <ul class="loans-list">
+                            {% for loan in active_loans %}
+                            <li class="loan-item">
+                                <div class="loan-info">
+                                    <span class="loan-item-title">{{ loan.item.title }}</span>
+                                    <span class="loan-borrower">{{ _('Prestito a:') }} {{ loan.borrower }}</span>
+                                    <span class="loan-date">{{ _('Dal:') }} {{ loan.start_date.strftime('%d/%m/%Y') }}</span>
+                                    {% if loan.expected_return_date %}
+                                    <span class="loan-return">{{ _('Ritorno previsto:') }} {{ loan.expected_return_date.strftime('%d/%m/%Y') }}</span>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="empty-state">{{ _('Nessun prestito attivo.') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="private-area-actions">
+            {% if unread_notifications > 0 %}
+            <a href="{{ url_for('notifications_list') }}" class="btn btn-primary">
+                🔔 {{ _('Notifiche') }} ({{ unread_notifications }})
+            </a>
+            {% endif %}
+            <a href="{{ url_for('collezione') }}" class="btn btn-secondary">{{ _('Vedi Collezione') }}</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline">{{ _('Logout') }}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

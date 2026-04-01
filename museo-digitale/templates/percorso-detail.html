@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}{{ percorso.title }} - Percorso Didattico{% endblock %}
+
+{% block content %}
+<div class="percorso-detail-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{{ url_for('didattica') }}">Didattica</a>
+        <span class="separator">›</span>
+        <a href="{{ url_for('percorsi') }}">Percorsi</a>
+        <span class="separator">›</span>
+        <span>{{ percorso.title }}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="percorso-detail-header">
+        <div class="percorso-detail-icon">{{ percorso.icon if percorso.icon else '📚' }}</div>
+        <h1 class="percorso-detail-title">{{ percorso.title }}</h1>
+        <div class="percorso-detail-meta">
+            <span class="percorso-meta-badge">{{ percorso.age_group }}</span>
+            <span class="percorso-meta-separator">•</span>
+            <span class="percorso-meta-text">{{ percorso.age_range }}</span>
+            <span class="percorso-meta-separator">•</span>
+            <span class="percorso-meta-text">{{ percorso.duration }}</span>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <section class="percorso-detail-section">
+        <h2 class="section-heading">Descrizione</h2>
+        <p class="percorso-detail-text">{{ percorso.description }}</p>
+    </section>
+
+    <!-- Objectives -->
+    <section class="percorso-detail-section">
+        <h2 class="section-heading">
+            <span class="section-icon">🎯</span>
+            Obiettivi Didattici
+        </h2>
+        <ul class="percorso-objectives-list">
+            {% for objective in percorso.objectives %}
+            <li class="objective-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>{{ objective }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Activities -->
+    <section class="percorso-detail-section">
+        <h2 class="section-heading">
+            <span class="section-icon">✨</span>
+            Attività Proposte
+        </h2>
+        <div class="percorso-activities-grid">
+            {% for activity in percorso.activities %}
+            <div class="activity-card">
+                <div class="activity-number">{{ loop.index }}</div>
+                <p class="activity-text">{{ activity }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Items in Path -->
+    {% if percorso.path_items %}
+    <section class="percorso-detail-section">
+        <h2 class="section-heading">
+            <span class="section-icon">🏛️</span>
+            Oggetti del Percorso
+            <span class="items-count">({{ percorso.path_items|length }})</span>
+        </h2>
+        <p class="section-subtitle">Gli oggetti della collezione utilizzati in questo percorso</p>
+        
+        <div class="percorso-items-grid">
+            {% for item in percorso.path_items %}
+            <article class="item-card">
+                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="card-link">
+                    <div class="card-image">
+                        <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">{{ item.title }}</h3>
+                        <div class="card-meta">
+                            {% if item.region %}
+                            <span class="badge badge-region">{{ item.region.name }}</span>
+                            {% endif %}
+                            {% if item.era %}
+                            <span class="badge badge-era">{{ item.era.name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Quiz Section (placeholder) -->
+    <section class="percorso-detail-section percorso-quiz-section">
+        <h2 class="section-heading">
+            <span class="section-icon">❓</span>
+            Quiz Interattivo
+        </h2>
+        <p class="section-subtitle">Metti alla prova le tue conoscenze con questo quiz interattivo</p>
+        <div id="quiz-container" class="quiz-container">
+            <!-- Quiz will be loaded here by JavaScript -->
+            <div class="quiz-placeholder">
+                <p>Il quiz interattivo sarà disponibile a breve</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Actions -->
+    <div class="percorso-detail-actions">
+        <a href="{{ url_for('percorsi') }}" class="btn-secondary">← Torna ai Percorsi</a>
+        <a href="{{ url_for('contact') }}" class="btn-primary">Prenota una Visita →</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Quiz interattivo (placeholder - può essere implementato in futuro)
+document.addEventListener('DOMContentLoaded', function() {
+    // Quiz functionality can be added here
+    console.log('Quiz section ready');
+});
+</script>
+{% endblock %}
+

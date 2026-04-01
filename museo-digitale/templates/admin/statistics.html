@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Statistiche') }}{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="container">
+        <div class="admin-header">
+            <a href="{{ url_for('admin_dashboard') }}" class="back-link">← {{ _('Torna al Dashboard') }}</a>
+            <h1 class="section-title">{{ _('Statistiche Avanzate') }}</h1>
+        </div>
+
+        <div class="stats-overview">
+            <div class="stat-card-large">
+                <h3>{{ _('Collezione') }}</h3>
+                <div class="stat-numbers">
+                    <div class="stat-number">
+                        <span class="stat-value">{{ total_items }}</span>
+                        <span class="stat-label">{{ _('Oggetti Totali') }}</span>
+                    </div>
+                    <div class="stat-number">
+                        <span class="stat-value">{{ visible_items }}</span>
+                        <span class="stat-label">{{ _('Visibili al Pubblico') }}</span>
+                    </div>
+                    <div class="stat-number">
+                        <span class="stat-value">{{ "%.2f"|format(total_value) }} €</span>
+                        <span class="stat-label">{{ _('Valore Totale Stimato') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-section">
+                <h2 class="section-subtitle">{{ _('Per Categoria') }}</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Categoria') }}</th>
+                            <th>{{ _('Numero Oggetti') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in category_stats %}
+                        <tr>
+                            <td>{{ stat.name }}</td>
+                            <td>{{ stat.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="stat-section">
+                <h2 class="section-subtitle">{{ _('Per Regione') }}</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Regione') }}</th>
+                            <th>{{ _('Numero Oggetti') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in region_stats %}
+                        <tr>
+                            <td>{{ stat.name }}</td>
+                            <td>{{ stat.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="stat-section">
+                <h2 class="section-subtitle">{{ _('Per Epoca') }}</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Epoca') }}</th>
+                            <th>{{ _('Numero Oggetti') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in era_stats %}
+                        <tr>
+                            <td>{{ stat.name }}</td>
+                            <td>{{ stat.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="stat-section">
+            <h2 class="section-subtitle">{{ _('Oggetti Più Visualizzati') }}</h2>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>{{ _('Oggetto') }}</th>
+                        <th>{{ _('Visualizzazioni') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in most_viewed %}
+                    <tr>
+                        <td><a href="{{ url_for('item_detail', item_id=item.id) }}">{{ item.title }}</a></td>
+                        <td>{{ item.view_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
