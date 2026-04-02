@@ -11,4 +11,4 @@ qrcode==7.4.2
 
 # Optional for Production
 # psycopg2-binary==2.9.9
-# gunicorn==21.2.0
+gunicorn==21.2.0
