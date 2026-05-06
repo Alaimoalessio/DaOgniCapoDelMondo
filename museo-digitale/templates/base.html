@@ -4,9 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Da ogni capo del mondo - Museo Digitale di copricapi e oggetti storici">
+    <meta name="description" content="{% block meta_description %}Da ogni capo del mondo - Museo Digitale di copricapi e oggetti storici{% endblock %}">
 
     <title>{% block title %}Da ogni capo del mondo{% endblock %} - Museo Digitale</title>
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:site_name" content="Da ogni capo del mondo – Museo Digitale">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{{ self.title() }} – Museo Digitale">
+    <meta property="og:description" content="{{ self.meta_description() }}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/logo.png', _external=True) }}{% endblock %}">
+    <meta property="og:image:alt" content="{{ self.title() }}">
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.title() }} – Museo Digitale">
+    <meta name="twitter:description" content="{{ self.meta_description() }}">
+    <meta name="twitter:image" content="{{ self.og_image() }}">
 
     <!-- Google Fonts - Modern 2025 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,60 +29,92 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- CSS — split into base / components / pages for maintainability -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css') }}">
+
+    <script>
+        // Force dark theme as requested by user (removing toggle functionality)
+        document.documentElement.setAttribute('data-theme', 'dark');
+    </script>
 
     {% block head %}{% endblock %}
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Navigazione principale">
         <div class="container">
-            <a href="{{ url_for('home') }}" class="logo">
+            <a href="{{ url_for('home') }}" class="logo" aria-label="Da ogni capo del mondo – Homepage">
                 <h1>Da ogni capo del mondo</h1>
                 <p class="tagline">Museo Digitale</p>
             </a>
 
-            <div class="nav-links">
-                <a href="{{ url_for('collezione') }}" class="nav-link"><span>{{ _('Collezione') }}</span></a>
-                <a href="{{ url_for('epoche') }}" class="nav-link"><span>{{ _('Epoche') }}</span></a>
-                <a href="{{ url_for('didattica') }}" class="nav-link"><span>{{ _('Didattica') }}</span></a>
-                <a href="{{ url_for('globe') }}" class="nav-link"><span>{{ _('Esplora Mappa') }}</span></a>
-                <a href="{{ url_for('advanced_search') }}" class="nav-link"><span>🔍 {{ _('Ricerca') }}</span></a>
-                <a href="{{ url_for('chi_siamo') }}" class="nav-link"><span>{{ _('Chi Siamo') }}</span></a>
-                <a href="{{ url_for('contact') }}" class="nav-link"><span>{{ _('Contatti') }}</span></a>
+            <!-- Hamburger Toggle (mobile) -->
+            <button class="nav-hamburger" id="navHamburger" aria-controls="navLinks" aria-expanded="false" aria-label="Apri menu di navigazione">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <div class="nav-links" id="navLinks" role="menu">
+                <!-- Navigation Links — aria-current="page" marks the active route -->
+                <a href="{{ url_for('collezione') }}" class="nav-link" role="menuitem"
+                   {% if request.endpoint in ('collezione', 'filter_items', 'item_detail') %}aria-current="page"{% endif %}>
+                    <span>{{ _('Collezione') }}</span>
+                </a>
+                <a href="{{ url_for('epoche') }}" class="nav-link" role="menuitem"
+                   {% if request.endpoint in ('epoche', 'era_detail') %}aria-current="page"{% endif %}>
+                    <span>{{ _('Epoche') }}</span>
+                </a>
+                <a href="{{ url_for('didattica') }}" class="nav-link" role="menuitem"
+                   {% if request.endpoint in ('didattica', 'percorso_detail', 'timeline_didattica', 'insegnanti') %}aria-current="page"{% endif %}>
+                    <span>{{ _('Didattica') }}</span>
+                </a>
+                <a href="{{ url_for('globe') }}" class="nav-link" role="menuitem"
+                   {% if request.endpoint == 'globe' %}aria-current="page"{% endif %}>
+                    <span>{{ _('Esplora Mappa') }}</span>
+                </a>
+                <a href="{{ url_for('chi_siamo') }}" class="nav-link" role="menuitem"
+                   {% if request.endpoint == 'chi_siamo' %}aria-current="page"{% endif %}>
+                    <span>{{ _('Chi Siamo') }}</span>
+                </a>
+                <a href="{{ url_for('contact') }}" class="nav-link" role="menuitem"
+                   {% if request.endpoint == 'contact' %}aria-current="page"{% endif %}>
+                    <span>{{ _('Contatti') }}</span>
+                </a>
                 
                 <!-- Language Switcher -->
                 <div class="language-switcher">
-                    <button class="language-btn" id="languageBtn">
-                        <span class="language-icon">🌐</span>
+                    <button class="language-btn" id="languageBtn" aria-haspopup="true" aria-expanded="false" aria-label="Seleziona lingua">
+                        <span class="language-icon" aria-hidden="true">🌐</span>
                         <span class="language-current">{{ session.get('language', 'it')|upper }}</span>
                     </button>
-                    <div class="language-menu" id="languageMenu">
-                        <a href="{{ url_for('set_language', lang='it') }}" class="language-option {% if session.get('language', 'it') == 'it' %}active{% endif %}">🇮🇹 Italiano</a>
-                        <a href="{{ url_for('set_language', lang='en') }}" class="language-option {% if session.get('language', 'it') == 'en' %}active{% endif %}">🇬🇧 English</a>
-                        <a href="{{ url_for('set_language', lang='es') }}" class="language-option {% if session.get('language', 'it') == 'es' %}active{% endif %}">🇪🇸 Español</a>
-                        <a href="{{ url_for('set_language', lang='fr') }}" class="language-option {% if session.get('language', 'it') == 'fr' %}active{% endif %}">🇫🇷 Français</a>
-                        <a href="{{ url_for('set_language', lang='de') }}" class="language-option {% if session.get('language', 'it') == 'de' %}active{% endif %}">🇩🇪 Deutsch</a>
+                    <div class="language-menu" id="languageMenu" role="menu" aria-label="Lingue disponibili">
+                        <a href="{{ url_for('set_language', lang='it') }}" class="language-option {% if session.get('language', 'it') == 'it' %}active{% endif %}" role="menuitem">🇮🇹 Italiano</a>
+                        <a href="{{ url_for('set_language', lang='en') }}" class="language-option {% if session.get('language', 'it') == 'en' %}active{% endif %}" role="menuitem">🇬🇧 English</a>
+                        <a href="{{ url_for('set_language', lang='es') }}" class="language-option {% if session.get('language', 'it') == 'es' %}active{% endif %}" role="menuitem">🇪🇸 Español</a>
+                        <a href="{{ url_for('set_language', lang='fr') }}" class="language-option {% if session.get('language', 'it') == 'fr' %}active{% endif %}" role="menuitem">🇫🇷 Français</a>
+                        <a href="{{ url_for('set_language', lang='de') }}" class="language-option {% if session.get('language', 'it') == 'de' %}active{% endif %}" role="menuitem">🇩🇪 Deutsch</a>
                     </div>
                 </div>
                 
                 <!-- Login/User Menu -->
                 {% if current_user.is_authenticated %}
-                <a href="{{ url_for('area_privata') }}" class="nav-link nav-user">
+                <a href="{{ url_for('area_privata') }}" class="nav-link nav-user" role="menuitem">
                     <span>👤 {{ current_user.username }}</span>
                 </a>
                 {% if current_user.is_admin %}
-                <a href="{{ url_for('admin_dashboard') }}" class="nav-link">
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-link" role="menuitem">
                     <span>🔧 {{ _('Admin') }}</span>
                 </a>
                 {% endif %}
-                <a href="{{ url_for('logout') }}" class="nav-link">
+                <a href="{{ url_for('logout') }}" class="nav-link" role="menuitem">
                     <span>{{ _('Logout') }}</span>
                 </a>
                 {% else %}
-                <a href="{{ url_for('login') }}" class="nav-link nav-login">
+                <a href="{{ url_for('login') }}" class="nav-link nav-login" role="menuitem">
                     <span>{{ _('Login') }}</span>
                 </a>
                 {% endif %}
@@ -132,7 +178,237 @@
 
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
+
+    <!-- ===== BACK TO TOP BUTTON ===== -->
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima alla pagina" title="Torna su">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="18 15 12 9 6 15"/>
+        </svg>
+    </button>
+
+    <!-- ===== QUICK VIEW MODAL ===== -->
+    <div class="qv-backdrop" id="qvBackdrop" role="dialog" aria-modal="true" aria-labelledby="qvTitle" aria-hidden="true">
+        <div class="qv-modal" id="qvModal">
+            <button class="qv-close" id="qvClose" aria-label="Chiudi anteprima">×</button>
+            <div class="qv-body" id="qvBody">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Nav Scrim -->
+    <div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
+
+    <!-- Mobile Nav Logic -->
+    <script>
+    (function() {
+        const hamburger = document.getElementById('navHamburger');
+        const navLinks  = document.getElementById('navLinks');
+        const scrim     = document.getElementById('navScrim');
+        const langBtn   = document.getElementById('languageBtn');
+        const langMenu  = document.getElementById('languageMenu');
+
+        if (!hamburger || !navLinks) return;
+
+        function openNav() {
+            navLinks.classList.add('is-open');
+            scrim.classList.add('is-visible');
+            hamburger.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNav() {
+            navLinks.classList.remove('is-open');
+            scrim.classList.remove('is-visible');
+            hamburger.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
+        hamburger.addEventListener('click', () => {
+            const isOpen = navLinks.classList.contains('is-open');
+            isOpen ? closeNav() : openNav();
+        });
+
+        scrim.addEventListener('click', closeNav);
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeNav();
+                if (langMenu) {
+                    langMenu.classList.remove('active');
+                    langBtn && langBtn.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+
+        // Language switcher toggle with aria-expanded update
+        if (langBtn && langMenu) {
+            langBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const expanded = langMenu.classList.toggle('active');
+                langBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            });
+            document.addEventListener('click', function() {
+                langMenu.classList.remove('active');
+                langBtn.setAttribute('aria-expanded', 'false');
+            });
+        }
+    })();
+    </script>
+
+    <!-- ===== GLOBAL UX SCRIPTS ===== -->
+    <script>
+    (function () {
+        'use strict';
+
+        // ── #13 BACK TO TOP ──────────────────────────────────────────────────
+        var backToTopBtn = document.getElementById('backToTop');
+        if (backToTopBtn) {
+            var SHOW_THRESHOLD = 320;
+            window.addEventListener('scroll', function () {
+                backToTopBtn.classList.toggle('is-visible', window.scrollY > SHOW_THRESHOLD);
+            }, { passive: true });
+            backToTopBtn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // ── #11 QUICK VIEW MODAL ─────────────────────────────────────────────
+        var qvBackdrop = document.getElementById('qvBackdrop');
+        var qvBody     = document.getElementById('qvBody');
+        var qvClose    = document.getElementById('qvClose');
+
+        if (qvBackdrop && qvBody && qvClose) {
+            var qvTriggerEl = null;
+            var qvFocusTrap = null;
+
+            function escHtml(s) {
+                return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : '';
+            }
+            function resolveImg(p) {
+                if (!p) return '';
+                return (p.startsWith('http://') || p.startsWith('https://')) ? p : '/static/' + p;
+            }
+
+            function buildQvContent(item) {
+                var year = (item.year_from || item.year_to)
+                    ? '<p class="qv-date">' + (item.year_from||'') + (item.year_from && item.year_to ? ' – ' : '') + (item.year_to||'') + '</p>'
+                    : '';
+                var badges = [
+                    item.region   ? '<span class="badge badge-region">'   + escHtml(item.region)   + '</span>' : '',
+                    item.era      ? '<span class="badge badge-era">'      + escHtml(item.era)      + '</span>' : '',
+                    item.category ? '<span class="badge badge-category">' + escHtml(item.category) + '</span>' : ''
+                ].join('');
+                var mats = (item.materials && item.materials.length)
+                    ? '<div class="qv-materials"><span class="qv-material-label">Materiali</span>'
+                        + item.materials.map(function(m){ return '<span class="qv-material-tag">'+escHtml(m)+'</span>'; }).join('')
+                        + '</div>'
+                    : '';
+                // A11y #21: descriptive alt text with category, region, era, year
+                var altParts = [item.title, item.category, item.region, item.era,
+                    item.year_from ? (item.year_from + (item.year_to && item.year_to !== item.year_from ? ' – ' + item.year_to : '')) : null
+                ].filter(Boolean);
+                var imgAlt = escHtml(altParts.join(', '));
+                return '<div class="qv-image-col">'
+                    + '<img src="' + escHtml(resolveImg(item.image_url)) + '" alt="' + imgAlt + '" class="qv-image" loading="eager">'
+                    + '</div>'
+                    + '<div class="qv-info-col">'
+                    + '<h2 class="qv-title" id="qvTitle">' + escHtml(item.title) + '</h2>'
+                    + (badges ? '<div class="qv-badges">' + badges + '</div>' : '')
+                    + year
+                    + (item.description ? '<p class="qv-description">' + escHtml(item.description) + '</p>' : '')
+                    + mats
+                    + '<div class="qv-actions"><a href="/item/' + item.id + '" class="qv-btn-primary">Vedi scheda completa →</a></div>'
+                    + '</div>';
+            }
+
+            function installQvTrap() {
+                qvFocusTrap = function (e) {
+                    if (e.key !== 'Tab') return;
+                    var focusable = Array.from(qvBackdrop.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])'));
+                    if (!focusable.length) return;
+                    var first = focusable[0], last = focusable[focusable.length-1];
+                    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+                };
+                document.addEventListener('keydown', qvFocusTrap);
+            }
+            function removeQvTrap() {
+                if (qvFocusTrap) { document.removeEventListener('keydown', qvFocusTrap); qvFocusTrap = null; }
+            }
+
+            function openQv(itemId, trigger) {
+                qvTriggerEl = trigger;
+                qvBody.innerHTML = '<div class="qv-image-col"><div class="qv-image-skeleton"></div></div>'
+                    + '<div class="qv-info-col" style="justify-content:center;align-items:center;"><p style="color:var(--text-muted)">Caricamento…</p></div>';
+                qvBackdrop.classList.add('is-open');
+                qvBackdrop.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+                requestAnimationFrame(function(){ qvClose.focus(); });
+                installQvTrap();
+                fetch('/api/item/' + itemId)
+                    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+                    .then(function(item){ qvBody.innerHTML = buildQvContent(item); })
+                    .catch(function(){
+                        qvBody.innerHTML = '<div class="qv-error" style="grid-column:1/-1">'
+                            + '<p>Impossibile caricare i dettagli. <a href="/item/'+itemId+'" style="color:var(--accent-gold)">Apri la scheda completa →</a></p></div>';
+                    });
+            }
+
+            function closeQv() {
+                qvBackdrop.classList.remove('is-open');
+                qvBackdrop.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+                removeQvTrap();
+                if (qvTriggerEl) { qvTriggerEl.focus(); qvTriggerEl = null; }
+            }
+
+            // Event delegation — works after AJAX re-render of gallery cards
+            document.addEventListener('click', function (e) {
+                var btn = e.target.closest('.museum-item-quickview');
+                if (btn) { e.preventDefault(); e.stopPropagation(); openQv(btn.dataset.itemId, btn); }
+            });
+            qvClose.addEventListener('click', closeQv);
+            qvBackdrop.addEventListener('click', function(e){ if(e.target===qvBackdrop) closeQv(); });
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape' && qvBackdrop.classList.contains('is-open')) closeQv();
+            });
+        }
+
+        // ── #18 PAGE TRANSITIONS ─────────────────────────────────────────────
+        function isSameOriginNavLink(link) {
+            var href = link && link.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')
+                || link.hasAttribute('download') || link.target === '_blank') return false;
+            try { return new URL(href, window.location.origin).origin === window.location.origin; }
+            catch(_) { return false; }
+        }
+
+        if (typeof document.startViewTransition === 'function') {
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('a[href]');
+                if (!link || !isSameOriginNavLink(link) || e.ctrlKey || e.metaKey || e.shiftKey) return;
+                e.preventDefault();
+                var href = link.getAttribute('href');
+                document.startViewTransition(function(){ window.location.href = href; });
+            });
+        } else {
+            // CSS fade-out fallback for browsers without View Transitions API
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('a[href]');
+                if (!link || !isSameOriginNavLink(link) || e.ctrlKey || e.metaKey || e.shiftKey) return;
+                e.preventDefault();
+                var href = link.getAttribute('href');
+                document.body.style.transition = 'opacity 0.18s ease';
+                document.body.style.opacity = '0';
+                setTimeout(function(){ window.location.href = href; }, 190);
+            });
+        }
+
+    })();
+    </script>
+
     {% block scripts %}{% endblock %}
 </body>
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Epoche Storiche{% endblock %}
+{% block title %}{{ _("Epoche Storiche") }}{% endblock %}
 
 {% block content %}
 <div class="epoche-container">
@@ -9,7 +9,7 @@
         <div class="epoche-header-overlay"></div>
         <div class="epoche-header-content">
             <h1 class="epoche-title">Epoche Storiche</h1>
-            <p class="epoche-subtitle">Esplora le diverse epoche storiche rappresentate nella nostra collezione</p>
+            <p class="epoche-subtitle">{{ _("Esplora le diverse epoche storiche rappresentate nella nostra collezione") }}</p>
         </div>
     </div>
 
@@ -33,7 +33,7 @@
                 {% endif %}
                 
                 <div class="era-card-footer">
-                    <span class="era-card-cta">Esplora epoca →</span>
+                    <span class="era-card-cta">{{ _("Esplora epoca →") }}</span>
                 </div>
             </a>
         </article>

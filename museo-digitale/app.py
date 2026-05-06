@@ -3,6 +3,7 @@ Da ogni capo del mondo - Digital Museum
 Main Flask application with routes and business logic
 """
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for, session, send_file, send_from_directory
+from flask_babel import Babel, _
 from functools import wraps
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy import or_, and_, func, desc
@@ -12,6 +13,7 @@ from config import config
 from datetime import datetime, date, timedelta
 import os
 import json
+from didattica_data import get_percorsi_list, get_percorso_detail
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -43,18 +45,12 @@ login_manager.login_message_category = 'info'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Simple i18n helper (without Babel for now)
+# Initialize Flask-Babel
 def get_locale():
     """Get current language from session"""
     return session.get('language', 'it')
 
-def _(text):
-    """Simple translation function - returns text as-is for now"""
-    # In a full implementation, this would use Babel or a translation dictionary
-    return text
-
-# Make _ available to templates
-app.jinja_env.globals['_'] = _
+babel = Babel(app, locale_selector=get_locale)
 
 # Jinja2 filter for image URLs
 @app.template_filter('image_url')
@@ -74,24 +70,29 @@ def image_url_filter(image_path):
         return f'/static/{image_path}'
 
 
+@app.template_filter('og_image_url')
+def og_image_url_filter(image_path):
+    """Return absolute URL for Open Graph image tags (social crawlers require absolute URLs)."""
+    if not image_path:
+        return url_for('static', filename='images/logo.png', _external=True)
+    if image_path.startswith('http://') or image_path.startswith('https://'):
+        return image_path
+    try:
+        return url_for('static', filename=image_path, _external=True)
+    except Exception:
+        from flask import request as _req
+        return _req.host_url.rstrip('/') + f'/static/{image_path}'
+
+
 # ===== ROUTES =====
 
-@app.route('/')
-def home():
-    """Homepage - Landing page with featured items and globe preview"""
-    # Get 3 random items (or last 3 added) for featured section
-    featured_items = Item.query.order_by(Item.created_at.desc()).limit(3).all()
-    
-    # If we have less than 3 items, get all available
-    if len(featured_items) < 3:
-        featured_items = Item.query.limit(3).all()
-    
-    # Get globe data for preview
+def get_globe_data(limit_items=None):
+    """Helper function to fetch and format globe item data"""
     from sqlalchemy import func
     
     regions = Region.query.all()
     
-    # Geographic coordinates for each region (same as globe page)
+    # Geographic coordinates for each region (approximate center points)
     region_coords = {
         'Asia Orientale': {'lat': 35.0, 'lng': 105.0},
         'Himalaya': {'lat': 28.0, 'lng': 84.0},
@@ -119,7 +120,8 @@ def home():
                 eras.add(item.era.name)
         
         items_data = []
-        for item in items[:3]:  # Limit to 3 items for preview
+        target_items = items[:limit_items] if limit_items else items
+        for item in target_items:
             items_data.append({
                 'id': item.id,
                 'title': item.title,
@@ -139,12 +141,24 @@ def home():
         })
         
         total_items += len(items)
+        
+    return region_data, total_items
+
+@app.route('/')
+def home():
+    """Homepage - Landing page with featured items and globe preview"""
+    # Get 3 random items (or last 3 added) for featured section
+    featured_items = Item.query.order_by(Item.created_at.desc()).limit(3).all()
     
-    # Ensure we always have valid values
+    # If we have less than 3 items, get all available
+    if len(featured_items) < 3:
+        featured_items = Item.query.limit(3).all()
+    
+    # Get globe data for preview limiting to 3 items per region
+    region_data, total_items = get_globe_data(limit_items=3)
+    
     if not region_data:
         region_data = []
-    if total_items is None:
-        total_items = 0
     
     return render_template('index.html', 
                          featured_items=featured_items,
@@ -426,155 +440,14 @@ def didattica():
 @app.route('/didattica/percorsi')
 def percorsi():
     """List of all educational paths"""
-    # Percorsi didattici (hardcoded per ora, può essere migrato a DB in futuro)
-    percorsi_data = [
-        {
-            'id': 1,
-            'title': 'Viaggio nel Tempo: dalle Armature ai Copricapi',
-            'age_group': 'Scuola Primaria',
-            'age_range': '6-10 anni',
-            'duration': '1-2 ore',
-            'description': 'Un viaggio affascinante attraverso la storia, esplorando armature, elmi e copricapi cerimoniali di diverse epoche e culture.',
-            'icon': '🛡️',
-            'color': 'gold'
-        },
-        {
-            'id': 2,
-            'title': 'Culture del Mondo: Tradizioni e Simboli',
-            'age_group': 'Scuola Secondaria I grado',
-            'age_range': '11-13 anni',
-            'duration': '2 ore',
-            'description': 'Scopri come i copricapi e gli abiti tradizionali raccontano storie di culture diverse, simboli di identità e tradizioni millenarie.',
-            'icon': '🌍',
-            'color': 'turquoise'
-        },
-        {
-            'id': 3,
-            'title': 'Arte e Artigianato: Materiali e Tecniche',
-            'age_group': 'Scuola Secondaria II grado',
-            'age_range': '14-18 anni',
-            'duration': '2-3 ore',
-            'description': 'Analisi approfondita dei materiali, delle tecniche artigianali e dell\'evoluzione dell\'arte attraverso gli oggetti della collezione.',
-            'icon': '🎨',
-            'color': 'purple'
-        },
-        {
-            'id': 4,
-            'title': 'Storia Militare: Armi e Armature',
-            'age_group': 'Scuola Secondaria II grado',
-            'age_range': '14-18 anni',
-            'duration': '2-3 ore',
-            'description': 'Un percorso dedicato alla storia militare, esplorando l\'evoluzione di armi, armature e strategie attraverso i secoli.',
-            'icon': '⚔️',
-            'color': 'red'
-        }
-    ]
+    percorsi_data = get_percorsi_list()
     return render_template('percorsi.html', percorsi=percorsi_data)
 
 
 @app.route('/didattica/percorso/<int:percorso_id>')
 def percorso_detail(percorso_id):
     """Detail page for a specific educational path"""
-    # Dati percorsi (hardcoded, può essere migrato a DB)
-    percorsi_data = {
-        1: {
-            'id': 1,
-            'title': 'Viaggio nel Tempo: dalle Armature ai Copricapi',
-            'age_group': 'Scuola Primaria',
-            'age_range': '6-10 anni',
-            'duration': '1-2 ore',
-            'description': 'Un viaggio affascinante attraverso la storia, esplorando armature, elmi e copricapi cerimoniali di diverse epoche e culture.',
-            'objectives': [
-                'Comprendere l\'evoluzione delle armature e dei copricapi nel tempo',
-                'Conoscere diverse culture attraverso i loro oggetti tradizionali',
-                'Sviluppare capacità di osservazione e analisi',
-                'Apprezzare la diversità culturale mondiale'
-            ],
-            'activities': [
-                'Osservazione guidata degli oggetti',
-                'Attività di disegno e colorazione',
-                'Quiz interattivo su epoche e culture',
-                'Creazione di una timeline personale'
-            ],
-            'path_items': Item.query.filter(
-                or_(
-                    Item.category_id.in_([1]),  # Militaria
-                    Item.title.like('%elmo%'),
-                    Item.title.like('%armatura%'),
-                    Item.title.like('%copricapo%')
-                )
-            ).limit(8).all()
-        },
-        2: {
-            'id': 2,
-            'title': 'Culture del Mondo: Tradizioni e Simboli',
-            'age_group': 'Scuola Secondaria I grado',
-            'age_range': '11-13 anni',
-            'duration': '2 ore',
-            'description': 'Scopri come i copricapi e gli abiti tradizionali raccontano storie di culture diverse, simboli di identità e tradizioni millenarie.',
-            'objectives': [
-                'Comprendere il significato culturale degli oggetti tradizionali',
-                'Esplorare la diversità culturale mondiale',
-                'Analizzare simboli e significati nelle diverse culture',
-                'Sviluppare empatia e rispetto per le differenze culturali'
-            ],
-            'activities': [
-                'Analisi comparativa di oggetti da diverse regioni',
-                'Ricerca su simboli e significati culturali',
-                'Discussione guidata su identità e tradizioni',
-                'Creazione di mappe culturali interattive'
-            ],
-            'path_items': Item.query.filter(
-                Item.region_id.isnot(None)
-            ).limit(10).all()
-        },
-        3: {
-            'id': 3,
-            'title': 'Arte e Artigianato: Materiali e Tecniche',
-            'age_group': 'Scuola Secondaria II grado',
-            'age_range': '14-18 anni',
-            'duration': '2-3 ore',
-            'description': 'Analisi approfondita dei materiali, delle tecniche artigianali e dell\'evoluzione dell\'arte attraverso gli oggetti della collezione.',
-            'objectives': [
-                'Comprendere le proprietà e l\'uso dei materiali storici',
-                'Analizzare tecniche artigianali tradizionali',
-                'Valutare l\'evoluzione tecnologica nell\'artigianato',
-                'Apprezzare la maestria artigianale del passato'
-            ],
-            'activities': [
-                'Studio approfondito dei materiali (oro, argento, seta, legno)',
-                'Analisi delle tecniche di lavorazione',
-                'Confronto tra tecniche antiche e moderne',
-                'Progetto di ricerca su un materiale specifico'
-            ],
-            'path_items': Item.query.join(Item.materials).limit(12).all()
-        },
-        4: {
-            'id': 4,
-            'title': 'Storia Militare: Armi e Armature',
-            'age_group': 'Scuola Secondaria II grado',
-            'age_range': '14-18 anni',
-            'duration': '2-3 ore',
-            'description': 'Un percorso dedicato alla storia militare, esplorando l\'evoluzione di armi, armature e strategie attraverso i secoli.',
-            'objectives': [
-                'Comprendere l\'evoluzione delle armi e armature',
-                'Analizzare strategie militari storiche',
-                'Valutare l\'impatto della tecnologia militare',
-                'Riflettere sul significato della guerra nella storia'
-            ],
-            'activities': [
-                'Analisi cronologica di armi e armature',
-                'Studio delle strategie militari per epoca',
-                'Confronto tra armature di diverse culture',
-                'Discussione guidata su pace e conflitto'
-            ],
-            'path_items': Item.query.filter(
-                Item.category_id.in_([1])  # Militaria
-            ).limit(10).all()
-        }
-    }
-    
-    percorso = percorsi_data.get(percorso_id)
+    percorso = get_percorso_detail(percorso_id)
     if not percorso:
         from flask import abort
         abort(404)
@@ -641,6 +514,13 @@ def filter_items():
                          })
 
 
+@app.route('/api/item/<int:item_id>')
+def api_item(item_id):
+    """JSON API endpoint for quick-view modal — returns a single item's data"""
+    item = Item.query.get_or_404(item_id)
+    return jsonify(item.to_dict())
+
+
 @app.route('/api/filter')
 def api_filter():
     """JSON API endpoint for dynamic filtering"""
@@ -649,6 +529,11 @@ def api_filter():
     region_id = request.args.get('region', type=int)
     material_id = request.args.get('material', type=int)
     era_id = request.args.get('era', type=int)
+    
+    page = request.args.get('page', 1, type=int)
+    # Use app limit with a hard cap to prevent memory leak attacks
+    per_page = request.args.get('per_page', app.config.get('ITEMS_PER_PAGE', 12), type=int)
+    per_page = min(per_page, 50)
     
     # Build query
     query = Item.query
@@ -662,74 +547,23 @@ def api_filter():
     if material_id:
         query = query.join(Item.materials).filter(Material.id == material_id)
     
-    items = query.all()
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     
     # Convert to JSON
     return jsonify({
-        'count': len(items),
-        'items': [item.to_dict() for item in items]
+        'count': pagination.total,
+        'page': page,
+        'pages': pagination.pages,
+        'has_next': pagination.has_next,
+        'has_prev': pagination.has_prev,
+        'items': [item.to_dict() for item in pagination.items]
     })
 
 
 @app.route('/globe')
 def globe():
     """Interactive 3D globe view of collection by geographic region"""
-    from sqlalchemy import func
-    
-    # Get all regions with their items
-    regions = Region.query.all()
-    
-    # Geographic coordinates for each region (approximate center points)
-    region_coords = {
-        'Asia Orientale': {'lat': 35.0, 'lng': 105.0},
-        'Himalaya': {'lat': 28.0, 'lng': 84.0},
-        'Africa Occidentale': {'lat': 8.0, 'lng': -2.0},
-        'Europa': {'lat': 50.0, 'lng': 10.0},
-        'Asia': {'lat': 34.0, 'lng': 100.0},
-        'Africa': {'lat': 0.0, 'lng': 20.0},
-        'Americhe': {'lat': 10.0, 'lng': -75.0},
-        'Oceania': {'lat': -25.0, 'lng': 140.0}
-    }
-    
-    region_data = []
-    total_items = 0
-    
-    for region in regions:
-        items = region.items.all()
-        if not items:
-            continue
-            
-        # Get coordinates for this region
-        coords = region_coords.get(region.name, {'lat': 0, 'lng': 0})
-        
-        # Get unique eras for this region
-        eras = set()
-        for item in items:
-            if item.era:
-                eras.add(item.era.name)
-        
-        # Prepare item data
-        items_data = []
-        for item in items:
-            items_data.append({
-                'id': item.id,
-                'title': item.title,
-                'image_url': item.image_url,
-                'category': item.category.name if item.category else None,
-                'era': item.era.name if item.era else None
-            })
-        
-        region_data.append({
-            'id': region.id,
-            'name': region.name,
-            'lat': coords['lat'],
-            'lng': coords['lng'],
-            'item_count': len(items),
-            'unique_eras': len(eras),
-            'items': items_data
-        })
-        
-        total_items += len(items)
+    region_data, total_items = get_globe_data()
     
     return render_template('globe.html',
                          region_data=region_data,
@@ -1698,6 +1532,16 @@ def export_json():
 
 # ===== DATABASE INITIALIZATION =====
 
+@app.errorhandler(404)
+def page_not_found(e):
+    """Custom 404 error page"""
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    """Custom 500 error page"""
+    return render_template('500.html'), 500
+
 def init_db():
     """Initialize database and create tables"""
     with app.app_context():
@@ -1716,7 +1560,7 @@ if __name__ == '__main__':
     
     # Run development server
     print("\n=== Da ogni capo del mondo - Digital Museum ===")
-    print("Server running at: http://localhost:5001")
+    print("Server running at: http://localhost:5002")
     print("Press CTRL+C to stop\n")
     
-    app.run(debug=True, host='127.0.0.1', port=5001)
+    app.run(debug=False, host='127.0.0.1', port=5002)

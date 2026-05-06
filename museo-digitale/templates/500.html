@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Errore del Server - 500{% endblock %}
+
+{% block content %}
+<style>
+    .error-container {
+        height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .error-content {
+        position: relative;
+        z-index: 10;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border-color);
+        padding: var(--spacing-xl);
+        border-radius: 24px;
+        max-width: 600px;
+        box-shadow: var(--shadow-xl);
+    }
+    
+    .error-code {
+        font-size: 8rem;
+        font-weight: 900;
+        line-height: 1;
+        background: var(--gradient-gold);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: var(--spacing-md);
+        font-family: var(--font-serif);
+    }
+    
+    .error-title {
+        font-size: 2rem;
+        color: var(--text-primary);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .error-message {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        margin-bottom: var(--spacing-lg);
+        line-height: 1.6;
+    }
+</style>
+
+<div class="error-container">
+    <div class="error-content">
+        <div class="error-code">500</div>
+        <h1 class="error-title">{{ _('Errore Interno del Museo') }}</h1>
+        <p class="error-message">{{ _('Abbiamo riscontrato un problema tecnico mentre caricavamo l\'archivio. Il nostro team di curatori sta già indagando sulla causa. Riprova tra qualche istante.') }}</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary" style="display:inline-block; font-size:1rem; padding: 12px 24px;">{{ _('Ritorna all\'Ingresso Reale') }}</a>
+        <a href="{{ url_for('contatti') }}" class="btn btn-outline" style="display:inline-block; font-size:1rem; padding: 12px 24px;">{{ _('Segnala il Problema') }}</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Esplora il Mondo{% endblock %}
+{% block title %}{{ _('Esplora il Mondo') }}{% endblock %}
 
 {% block head %}
 <style>
@@ -309,15 +309,14 @@
     <!-- Loading State -->
     <div class="globe-loading" id="globeLoading">
         <div class="loading-spinner"></div>
-        <p class="loading-text">Caricamento del globo terrestre...</p>
+        <p class="loading-text">{{ _('Caricamento del globo terrestre...') }}</p>
     </div>
 
     <!-- Globe Overlay Info -->
     <div class="globe-overlay">
-        <h1 class="globe-title">Esplora il Mondo</h1>
+        <h1 class="globe-title">{{ _('Il Mondo in Collezione') }}</h1>
         <p class="globe-subtitle">
-            Ruota il globo e clicca sui punti luminosi per scoprire gli oggetti della collezione provenienti da quella
-            regione.
+            {{ _('Esplora la provenienza geografica degli oggetti. Ruota il globo e clicca sugli indicatori dorati per scoprire tesori da ogni continente.') }}
         </p>
     </div>
 
@@ -326,21 +325,36 @@
 
     <!-- Info Box -->
     <div class="globe-info">
-        <div class="info-title">Come Navigare</div>
-        <div class="info-text">
-            • Trascina per ruotare il globo<br>
-            • Scroll per zoom<br>
-            • Clicca sui marker dorati per esplorare<br>
-            • <span style="color: var(--accent-gold);">{{ total_items }}</span> oggetti da <span
-                style="color: var(--accent-turquoise);">{{ total_regions }}</span> regioni
+        <h3 class="info-title">{{ _('Guida all\'esplorazione') }}</h3>
+        <div class="info-item">
+            <span class="info-icon">👆</span>
+            <span class="info-text">{{ _('Trascina per ruotare il globo o usa le frecce per navigare') }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-icon">🔍</span>
+            <span class="info-text">{{ _('Usa lo scroll per fare zoom') }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-icon">✨</span>
+            <span class="info-text">{{ _('Clicca sui marker dorati per i dettagli') }}</span>
         </div>
     </div>
 
-    <!-- Region Sidebar -->
-    <div class="region-sidebar" id="regionSidebar">
+    <!-- Touch hint: shown briefly on first single-touch on mobile -->
+    <div class="globe-touch-hint" id="globeTouchHint" aria-hidden="true">
+        Usa due dita per scorrere la pagina
+    </div>
+
+    <!-- Region Sidebar — role="dialog" for WCAG 2.1 AA focus management -->
+    <div class="region-sidebar" id="regionSidebar"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="sidebarRegionName"
+         aria-hidden="true"
+         tabindex="-1">
         <div class="sidebar-header">
             <h2 class="sidebar-title" id="sidebarRegionName">Regione</h2>
-            <button class="sidebar-close" id="closeSidebar" aria-label="Chiudi">×</button>
+            <button class="sidebar-close" id="closeSidebar" aria-label="Chiudi pannello regione">×</button>
         </div>
 
         <div class="sidebar-stats">
@@ -362,8 +376,10 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Globe.GL Library -->
-<script src="//unpkg.com/globe.gl"></script>
+<!-- Globe.GL Library (pinned to 2.45.1 — matches SRI hash) -->
+<script src="https://unpkg.com/globe.gl@2.45.1/dist/globe.gl.min.js"
+        integrity="sha384-AJr4rm9foSKTVa2ow0Oh67yVKiIGM9RjRg3Rtad91B8XVfcvThVXZnG2jQQFRGfe"
+        crossorigin="anonymous"></script>
 
 <script>
     // Region data with coordinates
@@ -431,6 +447,7 @@
             const globeViz = document.getElementById('globeViz');
             if (globeViz) {
                 globeViz.style.cursor = point ? 'pointer' : 'grab';
+
             }
             if (point) {
                 console.log('Hovering over:', point.label);
@@ -466,57 +483,148 @@
             document.getElementById('globeLoading').classList.add('hidden');
         }, 1500);
 
-        // Sidebar functionality
-        const sidebar = document.getElementById('regionSidebar');
+        // ===== SIDEBAR ACCESSIBILITY (WCAG 2.1 AA) =====
+        const sidebar       = document.getElementById('regionSidebar');
         const closeSidebarBtn = document.getElementById('closeSidebar');
 
+        // Track the element that triggered the sidebar so we can restore focus on close
+        let sidebarTriggerEl = null;
+        // Store the keydown handler so we can remove it on close
+        let focusTrapHandler = null;
+
+        /**
+         * Trap keyboard focus within the sidebar while it is open.
+         * Tab cycles through focusable elements; Shift+Tab reverses.
+         */
+        function installFocusTrap(container) {
+            const focusable = Array.from(container.querySelectorAll(
+                'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            ));
+            if (focusable.length === 0) return;
+
+            const first = focusable[0];
+            const last  = focusable[focusable.length - 1];
+
+            focusTrapHandler = function (e) {
+                if (e.key !== 'Tab') return;
+                if (e.shiftKey) {
+                    if (document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            };
+
+            container.addEventListener('keydown', focusTrapHandler);
+        }
+
+        function removeFocusTrap(container) {
+            if (focusTrapHandler) {
+                container.removeEventListener('keydown', focusTrapHandler);
+                focusTrapHandler = null;
+            }
+        }
+
+        function escapeHtmlGlobe(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function resolveImageUrlGlobe(imagePath) {
+            if (!imagePath) return '';
+            if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) return imagePath;
+            return '/static/' + imagePath;
+        }
+
         function showRegionSidebar(region) {
-            // Stop auto-rotate when viewing region
             globe.controls().autoRotate = false;
 
-            // Update sidebar content
-            document.getElementById('sidebarRegionName').textContent = region.name;
-            document.getElementById('sidebarItemCount').textContent = region.item_count;
-            document.getElementById('sidebarEraCount').textContent = region.unique_eras;
+            // Remember what triggered this so we can restore focus on close
+            sidebarTriggerEl = document.activeElement;
 
-            // Populate items
+            document.getElementById('sidebarRegionName').textContent = region.name;
+            document.getElementById('sidebarItemCount').textContent  = region.item_count;
+            document.getElementById('sidebarEraCount').textContent   = region.unique_eras;
+
             const itemsList = document.getElementById('regionItemsList');
-            itemsList.innerHTML = region.items.map(item => `
+            itemsList.innerHTML = region.items.map(item => {
+                // A11y #21: descriptive alt includes category and era when available
+                const altParts = [item.title, item.category, item.era].filter(Boolean);
+                const imgAlt   = escapeHtmlGlobe(altParts.join(', '));
+                return `
                 <a href="/item/${item.id}" class="region-item-card">
-                    <img src="${item.image_url.startsWith('http') ? item.image_url : '/static/' + item.image_url}" alt="${item.title}" class="region-item-image">
+                    <img src="${resolveImageUrlGlobe(item.image_url)}" alt="${imgAlt}" class="region-item-image">
                     <div class="region-item-content">
-                        <h3 class="region-item-title">${item.title}</h3>
+                        <h3 class="region-item-title">${escapeHtmlGlobe(item.title)}</h3>
                         <div class="region-item-meta">
-                            ${item.category ? `<span class="badge badge-category">${item.category}</span>` : ''}
-                            ${item.era ? `<span class="badge badge-era">${item.era}</span>` : ''}
+                            ${item.category ? `<span class="badge badge-category">${escapeHtmlGlobe(item.category)}</span>` : ''}
+                            ${item.era      ? `<span class="badge badge-era">${escapeHtmlGlobe(item.era)}</span>`            : ''}
                         </div>
                     </div>
                 </a>
-            `).join('');
+            `;
+            }).join('');
 
-            // Show sidebar
+            // Show sidebar and announce it to screen readers
             sidebar.classList.add('active');
+            sidebar.setAttribute('aria-hidden', 'false');
+
+            // Move focus to the close button once the CSS transition has started
+            requestAnimationFrame(() => {
+                closeSidebarBtn.focus();
+                installFocusTrap(sidebar);
+            });
         }
 
         function hideSidebar() {
+            removeFocusTrap(sidebar);
             sidebar.classList.remove('active');
-            // Resume auto-rotate
+            sidebar.setAttribute('aria-hidden', 'true');
             globe.controls().autoRotate = true;
+
+            // Return focus to the element that opened the sidebar
+            if (sidebarTriggerEl && typeof sidebarTriggerEl.focus === 'function') {
+                sidebarTriggerEl.focus();
+            }
+            sidebarTriggerEl = null;
         }
 
         closeSidebarBtn.addEventListener('click', hideSidebar);
 
-        // Close sidebar with Escape key
+        // Escape closes the sidebar (Escape on nav menus is handled separately in base.html)
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebar.classList.contains('active')) {
                 hideSidebar();
             }
         });
 
-        // Handle window resize
+        // ===== MOBILE TWO-FINGER SCROLL HINT =====
+        let touchHintShown = false;
+        const touchHint = document.getElementById('globeTouchHint');
+
+        if (touchHint) {
+            document.getElementById('globeViz').addEventListener('touchstart', function (e) {
+                if (!touchHintShown && e.touches.length === 1) {
+                    touchHintShown = true;
+                    touchHint.classList.add('is-visible');
+                    setTimeout(() => touchHint.classList.remove('is-visible'), 3200);
+                }
+            }, { passive: true });
+        }
+
+        // Handle window resize with Debounce
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            globe.width(window.innerWidth);
-            globe.height(window.innerHeight - 120);
+            if (resizeTimeout) clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                globe.width(window.innerWidth);
+                globe.height(window.innerHeight - 120);
+            }, 150);
         });
     })();
 </script>

@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 
 {% block title %}{{ item.title }}{% endblock %}
+{% block meta_description %}{{ item.description[:150] }}{% if item.description|length > 150 %}...{% endif %}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}{{ item.image_url|og_image_url }}{% endblock %}
 
 {% block content %}
 <div class="detail-container">
     <!-- Breadcrumb -->
     <nav class="breadcrumb">
-        <a href="{{ url_for('collezione') }}">Collezione</a>
+        <a href="{{ url_for('collezione') }}">{{ _('Collezione') }}</a>
         <span class="separator">›</span>
         <span>{{ item.title }}</span>
     </nav>
@@ -16,7 +19,9 @@
         <!-- Image Section -->
         <div class="detail-image-section">
             <div class="detail-image-wrapper">
-                <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" class="detail-image">
+                <img src="{{ item.image_url|image_url }}"
+                     alt="{{ item.title }}{% if item.category %}, {{ item.category.name }}{% endif %}{% if item.region %}, {{ item.region.name }}{% endif %}{% if item.era %}, {{ item.era.name }}{% endif %}{% if item.year_from %}, {{ item.year_from }}{% if item.year_to and item.year_to != item.year_from %} – {{ item.year_to }}{% endif %}{% endif %}{% if item.materials %}, {{ item.materials|map(attribute='name')|join(', ') }}{% endif %}"
+                     class="detail-image">
             </div>
         </div>
 
@@ -40,21 +45,21 @@
             <div class="metadata-grid">
                 {% if item.provenance %}
                 <div class="metadata-item">
-                    <span class="metadata-label">Provenienza</span>
+                    <span class="metadata-label">{{ _('Provenienza') }}</span>
                     <span class="metadata-value">{{ item.provenance }}</span>
                 </div>
                 {% endif %}
 
                 {% if item.region %}
                 <div class="metadata-item">
-                    <span class="metadata-label">Regione</span>
+                    <span class="metadata-label">{{ _('Regione') }}</span>
                     <span class="metadata-value">{{ item.region.name }}</span>
                 </div>
                 {% endif %}
 
                 {% if item.era %}
                 <div class="metadata-item">
-                    <span class="metadata-label">Epoca</span>
+                    <span class="metadata-label">{{ _('Epoca') }}</span>
                     <span class="metadata-value">
                         <a href="{{ url_for('era_detail', era_id=item.era.id, item_id=item.id) }}" class="era-link">
                             {{ item.era.name }}
@@ -65,7 +70,7 @@
 
                 {% if item.year_from %}
                 <div class="metadata-item">
-                    <span class="metadata-label">Datazione</span>
+                    <span class="metadata-label">{{ _('Datazione') }}</span>
                     <span class="metadata-value">
                         {{ item.year_from }}{% if item.year_to and item.year_to != item.year_from %} - {{ item.year_to
                         }}{% endif %}
@@ -75,7 +80,7 @@
 
                 {% if item.materials %}
                 <div class="metadata-item">
-                    <span class="metadata-label">Materiali</span>
+                    <span class="metadata-label">{{ _('Materiali') }}</span>
                     <div class="materials-list">
                         {% for material in item.materials %}
                         <a href="{{ url_for('material_detail', material_id=material.id) }}" class="material-chip material-chip-link">
@@ -89,14 +94,14 @@
 
             <!-- Description -->
             <div class="detail-section">
-                <h2 class="section-heading">Descrizione</h2>
+                <h2 class="section-heading">{{ _('Descrizione') }}</h2>
                 <p class="detail-text">{{ item.description }}</p>
             </div>
 
             <!-- Historical Context -->
             {% if item.historical_context %}
             <div class="detail-section">
-                <h2 class="section-heading">Contesto Storico</h2>
+                <h2 class="section-heading">{{ _('Contesto Storico') }}</h2>
                 <p class="detail-text">{{ item.historical_context }}</p>
             </div>
             {% endif %}
@@ -114,7 +119,7 @@
     <!-- Related Items -->
     {% if related %}
     <section class="related-section">
-        <h2 class="section-title">Oggetti Correlati</h2>
+        <h2 class="section-title">{{ _('Oggetti Correlati') }}</h2>
 
         <div class="related-grid">
             {% for related_item in related %}

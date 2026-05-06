@@ -2,11 +2,46 @@
 
 {% block title %}Da ogni capo del mondo - Museo Digitale{% endblock %}
 
+{% block head %}
+<style>
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("{{ url_for('static', filename='images/logo.png') }}");
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.1;
+        z-index: -1;
+        pointer-events: none;
+        -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
+        mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+    }
+    .home-hero, .home-featured, .hero-globe-container {
+        background: transparent !important;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <!-- Hero Section with Particle Morphing -->
 <section class="home-hero" id="heroSection">
     <!-- Three.js Canvas Container -->
-    <div id="hero-canvas" class="hero-canvas-container"></div>
+    <div id="hero-canvas" class="hero-canvas-container">
+        <!-- Pulsing glow placeholder shown while Three.js initialises -->
+        <div class="hero-canvas-placeholder" id="heroCanvasPlaceholder" aria-hidden="true">
+            <div class="hero-placeholder-glow"></div>
+        </div>
+    </div>
     
     <!-- Hero Content (Text Overlay) -->
     <div class="home-hero-content" id="heroContent">
@@ -14,28 +49,7 @@
         <p class="home-hero-subtitle" id="heroSubtitle">Un viaggio straordinario attraverso la storia e le culture del mondo</p>
                 </div>
 
-    <!-- Globe Container (will be revealed after morphing) -->
-    <div class="hero-globe-container" id="heroGlobeContainer">
-        <div class="hero-globe-overlay">
-            <div class="hero-globe-info">
-                <h2 class="hero-globe-title">Esplora il Mondo</h2>
-                <p class="hero-globe-description">Naviga attraverso la mappa interattiva e scopri le origini geografiche di ogni oggetto</p>
-                <div class="hero-globe-stats">
-                    <span class="hero-stat">{{ globe_total_items|default(0) }} oggetti</span>
-                    <span class="hero-stat-separator">•</span>
-                    <span class="hero-stat">{{ globe_total_regions|default(0) }} regioni</span>
-                </div>
-                <a href="{{ url_for('globe') }}" class="btn-globe-explore">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
-                    </svg>
-                    <span>Esplora Mappa Completa</span>
-                </a>
-                </div>
-        </div>
-        <!-- Globe will be initialized here via JavaScript -->
-    </div>
+    
 </section>
 
 <!-- Featured Items Section -->
@@ -53,7 +67,9 @@
                 <article class="home-featured-card">
                     <a href="{{ url_for('item_detail', item_id=item.id) }}" class="home-featured-link">
                         <div class="home-featured-image">
-                        <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy">
+                        <img src="{{ item.image_url|image_url }}"
+                             alt="{{ item.title }}{% if item.category %}, {{ item.category.name }}{% endif %}{% if item.region %}, {{ item.region.name }}{% endif %}{% if item.era %}, {{ item.era.name }}{% endif %}"
+                             loading="lazy" width="800" height="800">
                             <div class="home-featured-overlay">
                                 <span class="home-featured-view">Vedi dettagli →</span>
                             </div>
@@ -77,7 +93,7 @@
             <div class="home-featured-cta">
                 <a href="{{ url_for('collezione') }}" class="btn-secondary">
                     <span>Vedi Tutta la Collezione</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <polyline points="9 18 15 12 9 6"/>
                     </svg>
                 </a>
@@ -90,14 +106,11 @@
 
 {% block scripts %}
 <!-- Three.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+        integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu"
+        crossorigin="anonymous"></script>
 
-<!-- GSAP & ScrollTrigger -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-<!-- Globe.GL Library (for final globe) -->
-<script src="//unpkg.com/globe.gl"></script>
 
 <script>
     // Particle Morphing Effect: Logo -> Globe
@@ -107,21 +120,22 @@
         const canvasContainer = document.getElementById('hero-canvas');
         const heroSection = document.getElementById('heroSection');
         const heroContent = document.getElementById('heroContent');
-        const heroGlobeContainer = document.getElementById('heroGlobeContainer');
         
         if (!canvasContainer || !heroSection) return;
+
+        const isMobile = window.innerWidth < 768;
 
         // Three.js Setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ 
-            antialias: true, 
+            antialias: !isMobile, 
             alpha: true,
-            powerPreference: "high-performance"
+            powerPreference: isMobile ? "default" : "high-performance"
         });
         
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
         canvasContainer.appendChild(renderer.domElement);
 
         // Camera position
@@ -132,7 +146,7 @@
         let logoTexture = null;
         let morphProgress = 0;
         let time = 0;
-        const particleCount = 10000; // Adjust based on performance
+        const particleCount = isMobile ? 2500 : 10000; // Scaled based on device
         const logoSize = 3; // Size of logo in 3D space
         const globeRadius = 2; // Radius of target globe
 
@@ -304,249 +318,14 @@
                 // Create particle system
                 particleSystem = new THREE.Points(geometry, material);
                 scene.add(particleSystem);
+
+                // Hide the CSS placeholder now that the canvas has content
+                canvasContainer.classList.add('is-loaded');
             };
-            
+
             img.src = logoUrl;
         }
 
-        // GSAP ScrollTrigger for morphing
-        gsap.registerPlugin(ScrollTrigger);
-
-        const morphTimeline = gsap.timeline({
-            scrollTrigger: {
-                trigger: heroSection,
-                start: "top top",
-                end: "+=1500", // Increased scroll distance for longer visibility
-                scrub: true,
-                pin: true,
-                anticipatePin: 1,
-                onUpdate: (self) => {
-                    morphProgress = self.progress;
-                    
-                    // Update shader uniform
-                    if (particleSystem && particleSystem.material) {
-                        particleSystem.material.uniforms.morphProgress.value = morphProgress;
-                    }
-                    
-                    // Fade out text
-                    if (heroContent) {
-                        heroContent.style.opacity = Math.max(0, 1 - morphProgress * 2);
-                    }
-                    
-                    // Reveal globe at the end and hide particles
-                    if (heroGlobeContainer) {
-                        if (morphProgress > 0.75) {
-                            // Start revealing globe earlier (at 75% instead of 85%)
-                            // Use smoother easing for opacity transition
-                            const revealStart = 0.75;
-                            const revealEnd = 0.90;
-                            const revealRange = revealEnd - revealStart;
-                            
-                            if (morphProgress < revealEnd) {
-                                // Smooth fade in from 75% to 90%
-                                const normalizedProgress = (morphProgress - revealStart) / revealRange;
-                                // Use ease-out curve for smoother transition
-                                const easedProgress = 1 - Math.pow(1 - normalizedProgress, 3);
-                                heroGlobeContainer.style.opacity = easedProgress;
-                            } else {
-                                // Fully visible from 90% onwards
-                                heroGlobeContainer.style.opacity = 1;
-                            }
-                            
-                            // Enable interactions when globe is fully visible
-                            if (morphProgress > 0.90) {
-                                heroGlobeContainer.classList.add('active');
-                            } else {
-                                heroGlobeContainer.classList.remove('active');
-                            }
-                            
-                            // Hide particle system gradually
-                            if (particleSystem) {
-                                if (morphProgress > 0.92) {
-                                    // Fade out particles gradually
-                                    const particleFade = 1 - ((morphProgress - 0.92) / 0.08);
-                                    particleSystem.material.opacity = Math.max(0, particleFade);
-                                    if (morphProgress > 0.98) {
-                                        particleSystem.visible = false;
-                                    }
-                                } else {
-                                    particleSystem.visible = true;
-                                    if (particleSystem.material.opacity !== undefined) {
-                                        particleSystem.material.opacity = 1;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Hide globe completely when morphing is not advanced enough
-                            heroGlobeContainer.style.opacity = 0;
-                            heroGlobeContainer.classList.remove('active');
-                            
-                            // Show particles
-                            if (particleSystem) {
-                                particleSystem.visible = true;
-                                if (particleSystem.material.opacity !== undefined) {
-                                    particleSystem.material.opacity = 1;
-                                }
-                            }
-                        }
-                    }
-                },
-                onLeave: () => {
-                    // When scroll leaves the pinned section, hide globe and show particles
-                    if (heroGlobeContainer) {
-                        heroGlobeContainer.style.opacity = 0;
-                        heroGlobeContainer.style.pointerEvents = 'none';
-                        heroGlobeContainer.classList.remove('active');
-                    }
-                    if (particleSystem) {
-                        particleSystem.visible = true;
-                    }
-                },
-                onEnterBack: () => {
-                    // When scrolling back into the section, reset based on current progress
-                    if (heroGlobeContainer) {
-                        if (morphProgress > 0.75) {
-                            const revealStart = 0.75;
-                            const revealEnd = 0.90;
-                            const revealRange = revealEnd - revealStart;
-                            
-                            if (morphProgress < revealEnd) {
-                                const normalizedProgress = (morphProgress - revealStart) / revealRange;
-                                const easedProgress = 1 - Math.pow(1 - normalizedProgress, 3);
-                                heroGlobeContainer.style.opacity = easedProgress;
-                            } else {
-                                heroGlobeContainer.style.opacity = 1;
-                            }
-                            
-                            if (morphProgress > 0.90) {
-                                heroGlobeContainer.style.pointerEvents = 'auto';
-                                heroGlobeContainer.classList.add('active');
-                            } else {
-                                heroGlobeContainer.style.pointerEvents = 'none';
-                                heroGlobeContainer.classList.remove('active');
-                            }
-                        } else {
-                            heroGlobeContainer.style.opacity = 0;
-                            heroGlobeContainer.style.pointerEvents = 'none';
-                        }
-                    }
-                    if (particleSystem) {
-                        particleSystem.visible = morphProgress < 0.92;
-                        if (morphProgress < 0.92 && particleSystem.material.opacity !== undefined) {
-                            particleSystem.material.opacity = 1;
-                        }
-                    }
-                }
-            }
-        });
-
-        // Initialize Globe (will be revealed after morphing)
-        function initGlobe() {
-            if (!heroGlobeContainer) return;
-
-            const regionData = {{ globe_region_data | tojson | safe }} || [];
-            
-            if (!regionData || regionData.length === 0) {
-                console.warn('No globe data available');
-                return;
-            }
-
-            const globeViz = document.createElement('div');
-            globeViz.id = 'heroGlobeViz';
-            globeViz.style.width = '100%';
-            globeViz.style.height = '100%';
-            heroGlobeContainer.appendChild(globeViz);
-
-            const globe = Globe()(globeViz)
-                .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-                .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-                .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
-                .showAtmosphere(true)
-                .atmosphereColor('#00D9FF')
-                .atmosphereAltitude(0.2);
-
-            globe.pointOfView({ lat: 20, lng: 0, altitude: 2.5 });
-
-            const points = regionData.map(region => ({
-                lat: region.lat,
-                lng: region.lng,
-                size: 1.5 + (region.item_count * 0.2),
-                color: '#E8D5A3',
-                label: `${region.name} (${region.item_count} oggetti)`,
-                region: region
-            }));
-
-            globe
-                .pointsData(points)
-                .pointLat('lat')
-                .pointLng('lng')
-                .pointAltitude(0.05)
-                .pointRadius('size')
-                .pointColor('color')
-                .pointLabel('label')
-                .pointsMerge(true)
-                .pointsTransitionDuration(1000);
-
-            const arcsData = [];
-            for (let i = 0; i < points.length - 1; i++) {
-                arcsData.push({
-                    startLat: points[i].lat,
-                    startLng: points[i].lng,
-                    endLat: points[i + 1].lat,
-                    endLng: points[i + 1].lng,
-                    color: ['rgba(232, 213, 163, 0.3)', 'rgba(232, 213, 163, 0.2)']
-                });
-            }
-
-            globe.arcsData(arcsData)
-                .arcColor('color')
-                .arcDashLength(0.5)
-                .arcDashGap(0.3)
-                .arcDashAnimateTime(4000)
-                .arcStroke(1.0)
-                .arcsTransitionDuration(1000);
-
-            // Configure controls - disable zoom to allow page scrolling
-            const controls = globe.controls();
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 0.3;
-            controls.enableZoom = false; // Disable zoom to allow page scroll
-            controls.enablePan = false; // Disable pan
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.1;
-            
-            // Prevent wheel events from being captured by the globe
-            // Allow page scroll to work normally
-            const preventGlobeZoom = (e) => {
-                // Only prevent if the event is directly on the globe container
-                // This allows page scroll to work
-                if (e.target === globeViz || globeViz.contains(e.target)) {
-                    // Allow scroll to bubble up to page
-                    return;
-                }
-            };
-            
-            // Use capture phase to intercept but don't prevent default
-            globeViz.addEventListener('wheel', preventGlobeZoom, { passive: true, capture: true });
-            
-            // Also prevent touch events from interfering
-            globeViz.addEventListener('touchstart', (e) => {
-                // Only prevent if it's a pinch gesture, allow single touch for scroll
-                if (e.touches.length > 1) {
-                    e.stopPropagation();
-                }
-            }, { passive: true });
-
-            window.addEventListener('resize', () => {
-                globe.width(globeViz.offsetWidth);
-                globe.height(globeViz.offsetHeight);
-            });
-
-            window.heroGlobe = globe;
-        }
-
-        // Initialize globe after a delay
-        setTimeout(initGlobe, 500);
 
         // Animation loop
         function animate() {
@@ -568,11 +347,16 @@
             renderer.render(scene, camera);
         }
 
-        // Handle resize
+        // Handle resize with Debounce
+        let resizeTimeout;
         function handleResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            if (resizeTimeout) clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                
+            }, 150);
         }
 
         window.addEventListener('resize', handleResize);

@@ -1,0 +1,1280 @@
+# French translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-03 00:24+0200\n"
+"PO-Revision-Date: 2026-04-02 23:57+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app.py:599
+msgid "Per favore, inserisci username e password."
+msgstr ""
+
+#: app.py:611
+msgid "Username o password non corretti."
+msgstr ""
+
+#: app.py:621
+msgid "Logout effettuato con successo."
+msgstr ""
+
+#: app.py:684
+msgid "Nota salvata con successo."
+msgstr ""
+
+#: app.py:712
+msgid "Accesso negato. Solo gli amministratori possono accedere a questa sezione."
+msgstr ""
+
+#: app.py:877
+msgid "Oggetto creato con successo."
+msgstr ""
+
+#: app.py:881
+msgid "Errore durante la creazione: "
+msgstr ""
+
+#: app.py:934
+msgid "Oggetto aggiornato con successo."
+msgstr ""
+
+#: app.py:938
+msgid "Errore durante l'aggiornamento: "
+msgstr ""
+
+#: app.py:969
+msgid "Oggetto eliminato con successo."
+msgstr ""
+
+#: app.py:972
+msgid "Errore durante l'eliminazione: "
+msgstr ""
+
+#: app.py:1003
+msgid "Immagini caricate con successo."
+msgstr ""
+
+#: app.py:1016 app.py:1039
+msgid "Immagine non trovata."
+msgstr ""
+
+#: app.py:1024
+msgid "Immagine eliminata con successo."
+msgstr ""
+
+#: app.py:1027 app.py:1092 app.py:1126 app.py:1149 app.py:1180 app.py:1209
+msgid "Errore: "
+msgstr ""
+
+#: app.py:1047
+msgid "Immagine principale impostata."
+msgstr ""
+
+#: app.py:1088
+msgid "Mostra creata con successo."
+msgstr ""
+
+#: app.py:1122
+msgid "Mostra aggiornata con successo."
+msgstr ""
+
+#: app.py:1146
+msgid "Mostra eliminata con successo."
+msgstr ""
+
+#: app.py:1177
+msgid "Valutazione aggiunta con successo."
+msgstr ""
+
+#: app.py:1206
+msgid "QR code generato con successo."
+msgstr ""
+
+#: app.py:1358
+msgid "Non autorizzato."
+msgstr ""
+
+#: app.py:1486
+msgid "Backup disponibile solo per SQLite."
+msgstr ""
+
+#: app.py:1489
+msgid "Backup creato con successo."
+msgstr ""
+
+#: app.py:1492
+msgid "Errore durante il backup: "
+msgstr ""
+
+#: templates/500.html:58
+msgid "Errore Interno del Museo"
+msgstr "Erreur Interne du Musée"
+
+#: templates/500.html:59
+msgid ""
+"Abbiamo riscontrato un problema tecnico mentre caricavamo l'archivio. Il "
+"nostro team di curatori sta già indagando sulla causa. Riprova tra "
+"qualche istante."
+msgstr ""
+
+#: templates/500.html:60
+msgid "Ritorna all'Ingresso Reale"
+msgstr "Retour à l'Entrée"
+
+#: templates/500.html:61
+msgid "Segnala il Problema"
+msgstr "Signaler le Problème"
+
+#: templates/area-privata.html:3 templates/area-privata.html:9
+#: templates/login.html:10
+msgid "Area Privata"
+msgstr "Espace Privé"
+
+#: templates/area-privata.html:10
+msgid "Benvenuto,"
+msgstr "Bienvenue,"
+
+#: templates/admin/dashboard.html:13 templates/admin/statistics.html:3
+#: templates/area-privata.html:17
+msgid "Statistiche"
+msgstr "Statistiques"
+
+#: templates/area-privata.html:21
+msgid "Oggetti totali"
+msgstr "Objets au total"
+
+#: templates/area-privata.html:25
+msgid "Note private"
+msgstr "Notes privées"
+
+#: templates/area-privata.html:29
+msgid "Prestiti attivi"
+msgstr "Prêts en cours"
+
+#: templates/area-privata.html:38
+msgid "Note Recenti"
+msgstr "Notes Récentes"
+
+#: templates/area-privata.html:54
+msgid "Nessuna nota ancora."
+msgstr "Rien à afficher."
+
+#: templates/admin/dashboard.html:48 templates/area-privata.html:62
+msgid "Prestiti Attivi"
+msgstr "Prêts en Cours"
+
+#: templates/area-privata.html:71
+msgid "Prestito a:"
+msgstr "Prêté à:"
+
+#: templates/admin/exhibitions.html:32 templates/area-privata.html:72
+msgid "Dal:"
+msgstr "Du:"
+
+#: templates/area-privata.html:74
+msgid "Ritorno previsto:"
+msgstr "Retour prévu:"
+
+#: templates/area-privata.html:81
+msgid "Nessun prestito attivo."
+msgstr "Aucun prêt en cours."
+
+#: templates/admin/dashboard.html:56 templates/area-privata.html:90
+#: templates/notifications.html:3 templates/notifications.html:10
+msgid "Notifiche"
+msgstr "Notifications"
+
+#: templates/area-privata.html:93
+msgid "Vedi Collezione"
+msgstr "Voir Collection"
+
+#: templates/area-privata.html:94 templates/base.html:74
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: templates/admin/statistics.html:15 templates/base.html:40
+#: templates/detail.html:10
+msgid "Collezione"
+msgstr "Collection"
+
+#: templates/base.html:41
+msgid "Epoche"
+msgstr "Époques"
+
+#: templates/base.html:42 templates/percorso-detail.html:10
+msgid "Didattica"
+msgstr "Éducation"
+
+#: templates/base.html:43
+msgid "Esplora Mappa"
+msgstr "Explorer la Carte"
+
+#: templates/base.html:44
+msgid "Ricerca"
+msgstr "Research"
+
+#: templates/base.html:45
+msgid "Chi Siamo"
+msgstr "À Propos"
+
+#: templates/base.html:46
+msgid "Contatti"
+msgstr "Contacts"
+
+#: templates/base.html:70
+msgid "Admin"
+msgstr "Admin"
+
+#: templates/base.html:78 templates/login.html:3
+msgid "Login"
+msgstr "Connexion"
+
+#: templates/collezione.html:122
+msgid "Cerca oggetti, descrizioni, provenienza..."
+msgstr "Rechercher des objets..."
+
+#: templates/collezione.html:124
+msgid "Cancella ricerca"
+msgstr "Effacer"
+
+#: templates/collezione.html:127 templates/search.html:85
+msgid "Cerca"
+msgstr "Chercher"
+
+#: templates/collezione.html:135
+msgid "Collezione Completa"
+msgstr "Collection Complète"
+
+#: templates/collezione.html:138
+msgid "Risultati per"
+msgstr "Résultats pour"
+
+#: templates/collezione.html:139 templates/collezione.html:144
+#: templates/collezione.html:146
+msgid "oggetti"
+msgstr "objets"
+
+#: templates/collezione.html:144
+msgid "Mostrando"
+msgstr "Affichage"
+
+#: templates/admin/items.html:66 templates/collezione.html:144
+#: templates/collezione.html:258
+msgid "di"
+msgstr "sur"
+
+#: templates/collezione.html:193
+msgid "Prima pagina"
+msgstr "Première page"
+
+#: templates/collezione.html:202
+msgid "Pagina precedente"
+msgstr "Page précédente"
+
+#: templates/collezione.html:239
+msgid "Pagina successiva"
+msgstr "Page suivante"
+
+#: templates/collezione.html:248
+msgid "Ultima pagina"
+msgstr "Dernière page"
+
+#: templates/admin/items.html:66 templates/collezione.html:258
+msgid "Pagina"
+msgstr "Page"
+
+#: templates/collezione.html:260
+msgid "oggetti totali"
+msgstr "objets au total"
+
+#: templates/collezione.html:265
+msgid "Vai a pagina:"
+msgstr "Aller à la page:"
+
+#: templates/collezione.html:267
+msgid "Vai"
+msgstr "Aller"
+
+#: templates/admin/item_form.html:105 templates/detail.html:44
+msgid "Provenienza"
+msgstr "Provenance"
+
+#: templates/admin/item_form.html:58 templates/admin/statistics.html:59
+#: templates/detail.html:51 templates/search.html:31
+msgid "Regione"
+msgstr "Région"
+
+#: templates/admin/item_form.html:68 templates/admin/statistics.html:79
+#: templates/detail.html:58 templates/search.html:41
+msgid "Epoca"
+msgstr "Époque"
+
+#: templates/detail.html:69
+msgid "Datazione"
+msgstr "Datation"
+
+#: templates/admin/item_form.html:79 templates/detail.html:79
+msgid "Materiali"
+msgstr "Matériaux"
+
+#: templates/admin/exhibition_form.html:23 templates/admin/item_form.html:33
+#: templates/detail.html:93 templates/percorso-detail.html:32
+msgid "Descrizione"
+msgstr "Description"
+
+#: templates/admin/item_form.html:38 templates/detail.html:100
+msgid "Contesto Storico"
+msgstr "Contexte Historique"
+
+#: templates/detail.html:107
+msgid "Torna alla collezione"
+msgstr "Retour à la collection"
+
+#: templates/detail.html:109 templates/note-private.html:3
+#: templates/note-private.html:10
+msgid "Nota Privata"
+msgstr "Note Privée"
+
+#: templates/detail.html:118
+#, fuzzy
+msgid "Oggetti Correlati"
+msgstr "Objets Connexes"
+
+#: templates/epoche.html:3
+msgid "Epoche Storiche"
+msgstr "Historical Eras"
+
+#: templates/epoche.html:12
+msgid "Esplora le diverse epoche storiche rappresentate nella nostra collezione"
+msgstr "Explore the different historical eras represented in our collection"
+
+#: templates/epoche.html:36
+#, fuzzy
+msgid "Esplora epoca →"
+msgstr "Explore era →"
+
+#: templates/globe.html:3
+#, fuzzy
+msgid "Esplora il Mondo"
+msgstr "Explorer le Monde"
+
+#: templates/globe.html:312
+msgid "Caricamento del globo terrestre..."
+msgstr "Chargement du globe terrestre..."
+
+#: templates/globe.html:317
+#, fuzzy
+msgid "Il Mondo in Collezione"
+msgstr "Le Monde dans la Collection"
+
+#: templates/globe.html:319
+msgid ""
+"Esplora la provenienza geografica degli oggetti. Ruota il globo e clicca "
+"sugli indicatori dorati per scoprire tesori da ogni continente."
+msgstr ""
+
+#: templates/globe.html:328
+msgid "Guida all'esplorazione"
+msgstr "Guide d'exploration"
+
+#: templates/globe.html:331
+msgid "Trascina per ruotare il globo o usa le frecce per navigare"
+msgstr "Faites glisser pour faire pivoter le globe"
+
+#: templates/globe.html:335
+msgid "Usa lo scroll per fare zoom"
+msgstr "Utilisez le défilement pour zoomer"
+
+#: templates/globe.html:339
+msgid "Clicca sui marker dorati per i dettagli"
+msgstr "Cliquez sur les marqueurs dorés pour les détails"
+
+#: templates/login.html:11
+msgid "Accedi all'area riservata per la famiglia"
+msgstr "Accéder à l'espace familial"
+
+#: templates/login.html:28
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: templates/login.html:33
+msgid "Password"
+msgstr "Mot de passe"
+
+#: templates/login.html:40
+msgid "Ricordami"
+msgstr "Se souvenir de moi"
+
+#: templates/login.html:44
+msgid "Accedi"
+msgstr "Connexion"
+
+#: templates/login.html:48
+msgid "Torna alla home"
+msgstr "Retour à l'accueil"
+
+#: templates/note-private.html:9
+msgid "Torna all'oggetto"
+msgstr "Retour à l'objet"
+
+#: templates/note-private.html:17
+msgid "Nota"
+msgstr "Note"
+
+#: templates/note-private.html:18
+msgid "Aggiungi una nota privata per questo oggetto..."
+msgstr "Ajouter une note privée..."
+
+#: templates/note-private.html:22
+msgid "Salva Nota"
+msgstr "Enregistrer la Note"
+
+#: templates/admin/exhibition_form.html:90 templates/admin/item_form.html:176
+#: templates/note-private.html:23
+msgid "Annulla"
+msgstr "Annuler"
+
+#: templates/notifications.html:9
+msgid "Torna all'Area Privata"
+msgstr "Retour à l'Espace Privé"
+
+#: templates/notifications.html:25
+msgid "Segna come letta"
+msgstr "Marquer comme lu"
+
+#: templates/notifications.html:29
+msgid "Vedi Oggetto"
+msgstr "Voir Objet"
+
+#: templates/notifications.html:36
+msgid "Nessuna notifica."
+msgstr "Aucune notification."
+
+#: templates/percorso-detail.html:12
+msgid "Percorsi"
+msgstr "Parcours"
+
+#: templates/percorso-detail.html:40
+msgid "Obiettivi Didattici"
+msgstr "Objectifs Pédagogiques"
+
+#: templates/percorso-detail.html:58
+msgid "Attività Proposte"
+msgstr "Activités Proposées"
+
+#: templates/percorso-detail.html:75
+msgid "Oggetti del Percorso"
+msgstr "Objets de ce Parcours"
+
+#: templates/percorso-detail.html:78
+msgid "Gli oggetti della collezione utilizzati in questo percorso"
+msgstr "Objets de la collection utilisés dans ce parcours éducatif"
+
+#: templates/percorso-detail.html:109
+msgid "Quiz Interattivo"
+msgstr "Quiz Interactif"
+
+#: templates/percorso-detail.html:111
+msgid "Metti alla prova le tue conoscenze con questo quiz interattivo"
+msgstr "Testez vos connaissances avec ce quiz interactif"
+
+#: templates/percorso-detail.html:115
+msgid "Il quiz interattivo sarà disponibile a breve"
+msgstr "Le quiz interactif sera bientôt disponible"
+
+#: templates/percorso-detail.html:122
+msgid "Torna ai Percorsi"
+msgstr "Retour aux Parcours"
+
+#: templates/percorso-detail.html:123
+msgid "Prenota una Visita →"
+msgstr "Réserver une Visite →"
+
+#: templates/search.html:3 templates/search.html:9
+msgid "Ricerca Avanzata"
+msgstr "Recherche Avancée"
+
+#: templates/search.html:15
+msgid "Testo"
+msgstr "Texte"
+
+#: templates/search.html:16
+msgid "Cerca nel titolo, descrizione..."
+msgstr "Chercher dans le titre..."
+
+#: templates/admin/item_form.html:48 templates/admin/statistics.html:39
+#: templates/search.html:21
+msgid "Categoria"
+msgstr "Catégorie"
+
+#: templates/search.html:23 templates/search.html:33 templates/search.html:43
+msgid "Tutte"
+msgstr "Toutes"
+
+#: templates/search.html:51
+msgid "Materiale"
+msgstr "Matériel"
+
+#: templates/search.html:53 templates/search.html:75
+msgid "Tutti"
+msgstr "Tous"
+
+#: templates/admin/item_form.html:94 templates/search.html:63
+msgid "Anno da"
+msgstr "Année de"
+
+#: templates/admin/item_form.html:99 templates/search.html:68
+msgid "Anno a"
+msgstr "Année à"
+
+#: templates/admin/item_form.html:136 templates/search.html:73
+msgid "Stato Conservazione"
+msgstr "État de Conservation"
+
+#: templates/admin/items.html:29 templates/search.html:86
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: templates/search.html:92
+msgid "Risultati"
+msgstr "Résultats"
+
+#: templates/search.html:115
+msgid "Nessun risultato trovato."
+msgstr "Aucun résultat trouvé."
+
+#: templates/admin/dashboard.html:3
+msgid "Admin Dashboard"
+msgstr ""
+
+#: templates/admin/dashboard.html:9
+msgid "Pannello di Controllo"
+msgstr ""
+
+#: templates/admin/dashboard.html:11 templates/admin/items.html:3
+#: templates/admin/items.html:9
+msgid "Gestisci Oggetti"
+msgstr ""
+
+#: templates/admin/dashboard.html:12 templates/admin/exhibitions.html:3
+#: templates/admin/exhibitions.html:9
+msgid "Gestisci Mostre"
+msgstr ""
+
+#: templates/admin/dashboard.html:32 templates/admin/statistics.html:19
+msgid "Oggetti Totali"
+msgstr ""
+
+#: templates/admin/dashboard.html:40
+msgid "Mostre"
+msgstr ""
+
+#: templates/admin/dashboard.html:63
+msgid "Oggetti Recenti"
+msgstr ""
+
+#: templates/admin/dashboard.html:72
+msgid "Vedi Tutti"
+msgstr ""
+
+#: templates/admin/dashboard.html:76
+msgid "Mostre Recenti"
+msgstr ""
+
+#: templates/admin/dashboard.html:85
+msgid "Vedi Tutte"
+msgstr ""
+
+#: templates/admin/dashboard.html:90
+msgid "Azioni Rapide"
+msgstr ""
+
+#: templates/admin/dashboard.html:94 templates/admin/item_form.html:3
+#: templates/admin/item_form.html:10 templates/admin/items.html:10
+msgid "Nuovo Oggetto"
+msgstr ""
+
+#: templates/admin/dashboard.html:98 templates/admin/exhibition_form.html:3
+#: templates/admin/exhibition_form.html:10 templates/admin/exhibitions.html:10
+msgid "Nuova Mostra"
+msgstr ""
+
+#: templates/admin/dashboard.html:102
+msgid "Esporta PDF"
+msgstr ""
+
+#: templates/admin/dashboard.html:106
+msgid "Backup Database"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:3
+#: templates/admin/exhibition_form.html:10
+msgid "Modifica Mostra"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:9
+msgid "Torna alle Mostre"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:15 templates/admin/item_form.html:25
+msgid "Informazioni Base"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:18 templates/admin/item_form.html:28
+msgid "Titolo"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:29
+msgid "Luogo"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:34
+msgid "Indirizzo"
+msgstr "Address"
+
+#: templates/admin/exhibition_form.html:41
+msgid "Date"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:45
+msgid "Data Inizio"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:50
+msgid "Data Fine"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:55
+msgid "Stato"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:57
+msgid "Pianificata"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:58
+msgid "Attiva"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:59
+msgid "Completata"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:66
+msgid "Oggetti in Mostra"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:69
+msgid "Seleziona Oggetti"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:75
+msgid "Tieni premuto Ctrl/Cmd per selezionare più oggetti"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:80
+#: templates/admin/exhibition_form.html:83
+#: templates/admin/item_valuations.html:71
+msgid "Note"
+msgstr ""
+
+#: templates/admin/exhibition_form.html:89 templates/admin/item_form.html:175
+msgid "Salva"
+msgstr ""
+
+#: templates/admin/exhibitions.html:31
+msgid "Luogo:"
+msgstr ""
+
+#: templates/admin/exhibitions.html:34
+msgid "Al:"
+msgstr ""
+
+#: templates/admin/exhibitions.html:36
+msgid "Oggetti:"
+msgstr ""
+
+#: templates/admin/exhibitions.html:39 templates/admin/items.html:51
+msgid "Modifica"
+msgstr ""
+
+#: templates/admin/exhibitions.html:40 templates/admin/item_images.html:59
+#: templates/admin/items.html:52
+msgid "Sei sicuro?"
+msgstr ""
+
+#: templates/admin/exhibitions.html:41 templates/admin/item_images.html:60
+#: templates/admin/items.html:53
+msgid "Elimina"
+msgstr ""
+
+#: templates/admin/item_form.html:3 templates/admin/item_form.html:10
+msgid "Modifica Oggetto"
+msgstr ""
+
+#: templates/admin/item_form.html:9
+msgid "Torna agli Oggetti"
+msgstr ""
+
+#: templates/admin/item_form.html:44
+msgid "Classificazione"
+msgstr ""
+
+#: templates/admin/item_form.html:50 templates/admin/item_form.html:60
+#: templates/admin/item_form.html:70 templates/admin/item_form.html:138
+msgid "Seleziona..."
+msgstr ""
+
+#: templates/admin/item_form.html:85
+msgid "Tieni premuto Ctrl/Cmd per selezionare più materiali"
+msgstr ""
+
+#: templates/admin/item_form.html:90
+msgid "Datazione e Provenienza"
+msgstr ""
+
+#: templates/admin/item_form.html:111
+msgid "Immagine"
+msgstr ""
+
+#: templates/admin/item_form.html:120
+msgid "Carica Immagine"
+msgstr ""
+
+#: templates/admin/item_form.html:126
+msgid "Gestisci Immagini Multiple"
+msgstr ""
+
+#: templates/admin/item_form.html:132
+msgid "Conservazione e Acquisizione"
+msgstr ""
+
+#: templates/admin/item_form.html:147
+msgid "Data Acquisizione"
+msgstr ""
+
+#: templates/admin/item_form.html:152
+msgid "Costo Acquisizione (€)"
+msgstr ""
+
+#: templates/admin/item_form.html:159
+msgid "Note e Visibilità"
+msgstr ""
+
+#: templates/admin/item_form.html:162
+msgid "Note Private"
+msgstr ""
+
+#: templates/admin/item_form.html:169
+msgid "Visibile al pubblico"
+msgstr ""
+
+#: templates/admin/item_form.html:178 templates/admin/item_valuations.html:3
+#: templates/admin/item_valuations.html:10
+msgid "Valutazioni"
+msgstr ""
+
+#: templates/admin/item_form.html:180
+msgid "Genera QR Code"
+msgstr ""
+
+#: templates/admin/item_images.html:3 templates/admin/item_images.html:10
+msgid "Gestisci Immagini"
+msgstr ""
+
+#: templates/admin/item_images.html:9 templates/admin/item_valuations.html:9
+msgid "Torna all'Oggetto"
+msgstr ""
+
+#: templates/admin/item_images.html:25
+msgid "Carica Nuove Immagini"
+msgstr ""
+
+#: templates/admin/item_images.html:28
+msgid "Seleziona Immagini"
+msgstr ""
+
+#: templates/admin/item_images.html:30
+msgid "Puoi selezionare più immagini contemporaneamente"
+msgstr ""
+
+#: templates/admin/item_images.html:34
+msgid "Didascalia (per tutte le immagini)"
+msgstr ""
+
+#: templates/admin/item_images.html:38
+msgid "Carica Immagini"
+msgstr ""
+
+#: templates/admin/item_images.html:43
+msgid "Immagini Esistenti"
+msgstr ""
+
+#: templates/admin/item_images.html:51
+msgid "Principale"
+msgstr ""
+
+#: templates/admin/item_images.html:56
+msgid "Imposta Principale"
+msgstr ""
+
+#: templates/admin/item_images.html:67
+msgid "Nessuna immagine caricata."
+msgstr ""
+
+#: templates/admin/item_valuations.html:25
+msgid "Nuova Valutazione"
+msgstr ""
+
+#: templates/admin/item_valuations.html:29
+msgid "Valore Stimato (€)"
+msgstr ""
+
+#: templates/admin/item_valuations.html:34
+msgid "Valuta"
+msgstr ""
+
+#: templates/admin/item_valuations.html:43
+msgid "Data Valutazione"
+msgstr ""
+
+#: templates/admin/item_valuations.html:49
+#: templates/admin/item_valuations.html:87
+msgid "Valutatore"
+msgstr ""
+
+#: templates/admin/item_valuations.html:55
+msgid "Valore Assicurativo (€)"
+msgstr ""
+
+#: templates/admin/item_valuations.html:60
+msgid "Compagnia Assicurativa"
+msgstr ""
+
+#: templates/admin/item_valuations.html:65
+msgid "Numero Polizza"
+msgstr ""
+
+#: templates/admin/item_valuations.html:75
+msgid "Aggiungi Valutazione"
+msgstr ""
+
+#: templates/admin/item_valuations.html:80
+msgid "Storico Valutazioni"
+msgstr ""
+
+#: templates/admin/item_valuations.html:85
+msgid "Data"
+msgstr ""
+
+#: templates/admin/item_valuations.html:86
+msgid "Valore Stimato"
+msgstr ""
+
+#: templates/admin/item_valuations.html:88
+msgid "Valore Assicurativo"
+msgstr ""
+
+#: templates/admin/item_valuations.html:89
+msgid "Compagnia"
+msgstr ""
+
+#: templates/admin/item_valuations.html:105
+msgid "Nessuna valutazione registrata."
+msgstr ""
+
+#: templates/admin/items.html:15
+msgid "Cerca..."
+msgstr ""
+
+#: templates/admin/items.html:17
+msgid "Tutte le categorie"
+msgstr ""
+
+#: templates/admin/items.html:23
+msgid "Tutte le regioni"
+msgstr ""
+
+#: templates/admin/items.html:28
+msgid "Filtra"
+msgstr ""
+
+#: templates/admin/items.html:40
+msgid "Nessuna immagine"
+msgstr ""
+
+#: templates/admin/items.html:50
+msgid "Vedi"
+msgstr "Voir"
+
+#: templates/admin/items.html:64
+msgid "Precedente"
+msgstr ""
+
+#: templates/admin/items.html:68
+msgid "Successiva"
+msgstr ""
+
+#: templates/admin/statistics.html:9
+msgid "Torna al Dashboard"
+msgstr ""
+
+#: templates/admin/statistics.html:10
+msgid "Statistiche Avanzate"
+msgstr ""
+
+#: templates/admin/statistics.html:23
+msgid "Visibili al Pubblico"
+msgstr ""
+
+#: templates/admin/statistics.html:27
+msgid "Valore Totale Stimato"
+msgstr ""
+
+#: templates/admin/statistics.html:35
+msgid "Per Categoria"
+msgstr ""
+
+#: templates/admin/statistics.html:40 templates/admin/statistics.html:60
+#: templates/admin/statistics.html:80
+msgid "Numero Oggetti"
+msgstr ""
+
+#: templates/admin/statistics.html:55
+msgid "Per Regione"
+msgstr ""
+
+#: templates/admin/statistics.html:75
+msgid "Per Epoca"
+msgstr ""
+
+#: templates/admin/statistics.html:96
+msgid "Oggetti Più Visualizzati"
+msgstr ""
+
+#: templates/admin/statistics.html:100
+msgid "Oggetto"
+msgstr ""
+
+#: templates/admin/statistics.html:101
+msgid "Visualizzazioni"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/_termui_impl.py:613
+#, python-brace-format
+msgid "{editor}: Editing failed"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/_termui_impl.py:617
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:1114
+#: venv/lib/python3.14/site-packages/click/core.py:1151
+#, python-brace-format
+msgid "{text} {deprecated_message}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:1170
+msgid "Options"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:1245
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:1264
+#, python-brace-format
+msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:1448
+msgid "Aborted!"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:1822
+msgid "Commands"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:1853
+msgid "Missing command."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:1931
+#, python-brace-format
+msgid "No such command {name!r}."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:2355
+msgid "Value must be an iterable."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:2378
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:2567
+#, python-brace-format
+msgid ""
+"DeprecationWarning: The {param_type} {name!r} is "
+"deprecated.{extra_message}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:3015
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:3018
+#, python-brace-format
+msgid "default: {default}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:3022
+msgid "required"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/core.py:3082
+msgid "(dynamic)"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/decorators.py:465
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/decorators.py:522
+msgid "Show the version and exit."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/decorators.py:548
+msgid "Show this message and exit."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:50
+#: venv/lib/python3.14/site-packages/click/exceptions.py:89
+#, python-brace-format
+msgid "Error: {message}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:81
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:130
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:132
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:190
+msgid "Missing argument"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:192
+msgid "Missing option"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:194
+msgid "Missing parameter"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:196
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:203
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:223
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:235
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:282
+msgid "unknown error"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/exceptions.py:289
+#, python-brace-format
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/formatting.py:156
+msgid "Usage:"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/parser.py:199
+#, python-brace-format
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/parser.py:381
+#, python-brace-format
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/parser.py:444
+#, python-brace-format
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.14/site-packages/click/shell_completion.py:332
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/shell_completion.py:339
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/termui.py:165
+msgid "Repeat for confirmation"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/termui.py:181
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/termui.py:183
+#, python-brace-format
+msgid "Error: {e.message}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/termui.py:194
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/termui.py:253
+msgid "Error: invalid input"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/termui.py:872
+msgid "Press any key to continue..."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:332
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:369
+#, python-brace-format
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:460
+#, python-brace-format
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:482
+#, python-brace-format
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:538
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:719
+#, python-brace-format
+msgid "{value!r} is not a valid boolean. Recognized values: {states}"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:747
+#, python-brace-format
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:937
+msgid "file"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:939
+msgid "directory"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:941
+msgid "path"
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:988
+#, python-brace-format
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:997
+#, python-brace-format
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:1005
+#, python-brace-format
+msgid "{name} {filename!r} is a directory."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:1014
+#, python-brace-format
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:1023
+#, python-brace-format
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:1032
+#, python-brace-format
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: venv/lib/python3.14/site-packages/click/types.py:1099
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+

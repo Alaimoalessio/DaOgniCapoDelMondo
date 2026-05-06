@@ -10,27 +10,23 @@
             <p class="section-subtitle">{{ _('Benvenuto,') }} {{ current_user.username }}</p>
         </div>
 
-        <div class="private-area-grid">
-            <!-- Statistics Card -->
-            <div class="private-card">
-                <div class="private-card-header">
-                    <h2 class="private-card-title">{{ _('Statistiche') }}</h2>
-                </div>
-                <div class="private-card-content">
-                    <div class="stat-item">
-                        <span class="stat-label">{{ _('Oggetti totali') }}</span>
-                        <span class="stat-value">{{ total_items }}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">{{ _('Note private') }}</span>
-                        <span class="stat-value">{{ user_notes|length }}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">{{ _('Prestiti attivi') }}</span>
-                        <span class="stat-value">{{ active_loans|length }}</span>
-                    </div>
-                </div>
+        <!-- Metric cards: numbers large and immediately readable at a glance -->
+        <div class="stat-metrics-row">
+            <div class="stat-metric-card">
+                <div class="stat-metric-number">{{ total_items }}</div>
+                <div class="stat-metric-label">{{ _('Oggetti in collezione') }}</div>
             </div>
+            <div class="stat-metric-card stat-metric-card--turquoise">
+                <div class="stat-metric-number">{{ user_notes|length }}</div>
+                <div class="stat-metric-label">{{ _('Note private') }}</div>
+            </div>
+            <div class="stat-metric-card">
+                <div class="stat-metric-number">{{ active_loans|length }}</div>
+                <div class="stat-metric-label">{{ _('Prestiti attivi') }}</div>
+            </div>
+        </div>
+
+        <div class="private-area-grid">
 
             <!-- Recent Notes Card -->
             <div class="private-card">
@@ -82,7 +78,7 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
+        </div><!-- /private-area-grid -->
 
         <div class="private-area-actions">
             {% if unread_notifications > 0 %}

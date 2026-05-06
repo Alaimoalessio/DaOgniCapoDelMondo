@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}{{ era.name }} - Epoca Storica{% endblock %}
+{% block meta_description %}{% if details and details.description %}{{ details.description[:150] }}{% if details.description|length > 150 %}...{% endif %}{% else %}Scopri la collezione di opere appartenenti all'epoca {{ era.name }}.{% endif %}{% endblock %}
 
 {% block content %}
 <div class="era-container">
@@ -137,7 +138,9 @@
             <article class="item-card">
                 <a href="{{ url_for('item_detail', item_id=item.id) }}" class="card-link">
                     <div class="card-image">
-                        <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy">
+                        <img src="{{ item.image_url|image_url }}"
+                             alt="{{ item.title }}{% if item.category %}, {{ item.category.name }}{% endif %}{% if item.region %}, {{ item.region.name }}{% endif %}{% if item.era %}, {{ item.era.name }}{% endif %}"
+                             loading="lazy">
                     </div>
                     <div class="card-content">
                         <h3 class="card-title">{{ item.title }}</h3>

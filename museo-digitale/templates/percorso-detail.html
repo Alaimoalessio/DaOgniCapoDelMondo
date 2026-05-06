@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 
 {% block title %}{{ percorso.title }} - Percorso Didattico{% endblock %}
+{% block meta_description %}{{ percorso.description[:150] }}{% if percorso.description|length > 150 %}...{% endif %}{% endblock %}
 
 {% block content %}
 <div class="percorso-detail-container">
     <!-- Breadcrumb -->
     <nav class="breadcrumb">
-        <a href="{{ url_for('didattica') }}">Didattica</a>
+        <a href="{{ url_for('didattica') }}">{{ _('Didattica') }}</a>
         <span class="separator">›</span>
-        <a href="{{ url_for('percorsi') }}">Percorsi</a>
+        <a href="{{ url_for('percorsi') }}">{{ _('Percorsi') }}</a>
         <span class="separator">›</span>
         <span>{{ percorso.title }}</span>
     </nav>
@@ -28,7 +29,7 @@
 
     <!-- Description -->
     <section class="percorso-detail-section">
-        <h2 class="section-heading">Descrizione</h2>
+        <h2 class="section-heading">{{ _('Descrizione') }}</h2>
         <p class="percorso-detail-text">{{ percorso.description }}</p>
     </section>
 
@@ -36,7 +37,7 @@
     <section class="percorso-detail-section">
         <h2 class="section-heading">
             <span class="section-icon">🎯</span>
-            Obiettivi Didattici
+            {{ _('Obiettivi Didattici') }}
         </h2>
         <ul class="percorso-objectives-list">
             {% for objective in percorso.objectives %}
@@ -54,7 +55,7 @@
     <section class="percorso-detail-section">
         <h2 class="section-heading">
             <span class="section-icon">✨</span>
-            Attività Proposte
+            {{ _('Attività Proposte') }}
         </h2>
         <div class="percorso-activities-grid">
             {% for activity in percorso.activities %}
@@ -71,17 +72,19 @@
     <section class="percorso-detail-section">
         <h2 class="section-heading">
             <span class="section-icon">🏛️</span>
-            Oggetti del Percorso
+            {{ _('Oggetti del Percorso') }}
             <span class="items-count">({{ percorso.path_items|length }})</span>
         </h2>
-        <p class="section-subtitle">Gli oggetti della collezione utilizzati in questo percorso</p>
+        <p class="section-subtitle">{{ _('Gli oggetti della collezione utilizzati in questo percorso') }}</p>
         
         <div class="percorso-items-grid">
             {% for item in percorso.path_items %}
             <article class="item-card">
                 <a href="{{ url_for('item_detail', item_id=item.id) }}" class="card-link">
                     <div class="card-image">
-                        <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy">
+                        <img src="{{ item.image_url|image_url }}"
+                             alt="{{ item.title }}{% if item.region %}, {{ item.region.name }}{% endif %}{% if item.era %}, {{ item.era.name }}{% endif %}"
+                             loading="lazy">
                     </div>
                     <div class="card-content">
                         <h3 class="card-title">{{ item.title }}</h3>
@@ -105,21 +108,21 @@
     <section class="percorso-detail-section percorso-quiz-section">
         <h2 class="section-heading">
             <span class="section-icon">❓</span>
-            Quiz Interattivo
+            {{ _('Quiz Interattivo') }}
         </h2>
-        <p class="section-subtitle">Metti alla prova le tue conoscenze con questo quiz interattivo</p>
+        <p class="section-subtitle">{{ _('Metti alla prova le tue conoscenze con questo quiz interattivo') }}</p>
         <div id="quiz-container" class="quiz-container">
             <!-- Quiz will be loaded here by JavaScript -->
             <div class="quiz-placeholder">
-                <p>Il quiz interattivo sarà disponibile a breve</p>
+                <p>{{ _('Il quiz interattivo sarà disponibile a breve') }}</p>
             </div>
         </div>
     </section>
 
     <!-- Actions -->
     <div class="percorso-detail-actions">
-        <a href="{{ url_for('percorsi') }}" class="btn-secondary">← Torna ai Percorsi</a>
-        <a href="{{ url_for('contact') }}" class="btn-primary">Prenota una Visita →</a>
+        <a href="{{ url_for('percorsi') }}" class="btn-secondary">← {{ _('Torna ai Percorsi') }}</a>
+        <a href="{{ url_for('contact') }}" class="btn-primary">{{ _('Prenota una Visita →') }}</a>
     </div>
 </div>
 {% endblock %}

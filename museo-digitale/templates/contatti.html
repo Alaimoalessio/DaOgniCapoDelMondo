@@ -8,7 +8,7 @@
     <section class="contact-hero">
         <div class="container">
             <h1 class="contact-hero-title">Contatti</h1>
-            <p class="contact-hero-subtitle">Siamo qui per rispondere alle tue domande</p>
+            <p class="contact-hero-subtitle">{{ _("Siamo qui per rispondere alle tue domande") }}</p>
         </div>
     </section>
 
@@ -18,48 +18,61 @@
             <div class="contact-grid">
                 <!-- Contact Form -->
                 <div class="contact-form-wrapper">
-                    <h2 class="section-heading">Invia un Messaggio</h2>
-                    <form class="contact-form" method="POST" action="{{ url_for('contact') }}">
-                        <div class="form-group">
-                            <label for="name" class="form-label">Nome *</label>
-                            <input type="text" id="name" name="name" class="form-input" required 
-                                   placeholder="Il tuo nome">
+                    <h2 class="section-heading">{{ _("Invia un Messaggio") }}</h2>
+                    <form class="contact-form" method="POST" action="{{ url_for('contact') }}" id="contactForm" novalidate>
+                        <div class="form-group" id="fg-name">
+                            <label for="name" class="form-label">{{ _("Nome *") }}</label>
+                            <input type="text" id="name" name="name" class="form-input" required
+                                   autocomplete="name"
+                                   placeholder="{{ _("Il tuo nome") }}"
+                                   aria-describedby="err-name">
+                            <span class="form-field-error" id="err-name" role="alert">Inserisci il tuo nome.</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email *</label>
-                            <input type="email" id="email" name="email" class="form-input" required 
-                                   placeholder="tua.email@esempio.com">
+                        <div class="form-group" id="fg-email">
+                            <label for="email" class="form-label">{{ _("Email *") }}</label>
+                            <input type="email" id="email" name="email" class="form-input" required
+                                   autocomplete="email"
+                                   placeholder="{{ _("tua.email@esempio.com") }}"
+                                   aria-describedby="err-email">
+                            <span class="form-field-error" id="err-email" role="alert">Inserisci un indirizzo email valido.</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="subject" class="form-label">Oggetto *</label>
-                            <select id="subject" name="subject" class="form-input" required>
-                                <option value="">Seleziona un argomento</option>
-                                <option value="info">Informazioni generali</option>
-                                <option value="collezione">Informazioni sulla collezione</option>
-                                <option value="ricerca">Richiesta di ricerca</option>
-                                <option value="collaborazione">Proposta di collaborazione</option>
-                                <option value="media">Richiesta media</option>
-                                <option value="altro">Altro</option>
+                        <div class="form-group" id="fg-subject">
+                            <label for="subject" class="form-label">{{ _("Oggetto *") }}</label>
+                            <select id="subject" name="subject" class="form-input" required
+                                    aria-describedby="err-subject">
+                                <option value="">{{ _("Seleziona un argomento") }}</option>
+                                <option value="info">{{ _("Informazioni generali") }}</option>
+                                <option value="collezione">{{ _("Informazioni sulla collezione") }}</option>
+                                <option value="ricerca">{{ _("Richiesta di ricerca") }}</option>
+                                <option value="collaborazione">{{ _("Proposta di collaborazione") }}</option>
+                                <option value="media">{{ _("Richiesta media") }}</option>
+                                <option value="altro">{{ _("Altro") }}</option>
                             </select>
+                            <span class="form-field-error" id="err-subject" role="alert">Seleziona un argomento.</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="message" class="form-label">Messaggio *</label>
-                            <textarea id="message" name="message" class="form-textarea" rows="6" required 
-                                      placeholder="Scrivi qui il tuo messaggio..."></textarea>
+                        <div class="form-group" id="fg-message">
+                            <label for="message" class="form-label">{{ _("Messaggio *") }}</label>
+                            <textarea id="message" name="message" class="form-textarea" rows="6" required
+                                      minlength="10"
+                                      placeholder="{{ _("Scrivi qui il tuo messaggio...") }}"
+                                      aria-describedby="err-message"></textarea>
+                            <span class="form-field-error" id="err-message" role="alert">Il messaggio deve contenere almeno 10 caratteri.</span>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="fg-privacy">
                             <label class="form-checkbox">
-                                <input type="checkbox" name="privacy" required>
-                                <span>Accetto la <a href="#" class="link-privacy">privacy policy</a> *</span>
+                                <input type="checkbox" name="privacy" id="privacy" required
+                                       aria-describedby="err-privacy">
+                                <span>{{ _("Accetto la") }} <a href="#" class="link-privacy">{{ _("privacy policy") }}</a> *</span>
                             </label>
+                            <span class="form-field-error" id="err-privacy" role="alert">Devi accettare la privacy policy per continuare.</span>
                         </div>
 
                         <button type="submit" class="btn-submit">
-                            <span>Invia Messaggio</span>
+                            <span>{{ _("Invia Messaggio") }}</span>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="22" y1="2" x2="11" y2="13"/>
                                 <polygon points="22 2 15 22 11 13 2 9 22 2"/>
@@ -70,7 +83,7 @@
 
                 <!-- Contact Info -->
                 <div class="contact-info-wrapper">
-                    <h2 class="section-heading">Informazioni di Contatto</h2>
+                    <h2 class="section-heading">{{ _("Informazioni di Contatto") }}</h2>
                     
                     <div class="contact-info-grid">
                         <div class="contact-info-card">
@@ -80,10 +93,10 @@
                                     <circle cx="12" cy="10" r="3"/>
                                 </svg>
                             </div>
-                            <h3>Indirizzo</h3>
-                            <p>Museo Digitale<br>
+                            <h3>{{ _("Indirizzo") }}</h3>
+                            <p>{{ _("Museo Digitale") }}<br>
                             "Da ogni capo del mondo"<br>
-                            Collezione Virtuale</p>
+                            {{ _("Collezione Virtuale") }}</p>
                         </div>
 
                         <div class="contact-info-card">
@@ -92,9 +105,9 @@
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                                 </svg>
                             </div>
-                            <h3>Telefono</h3>
+                            <h3>{{ _("Telefono") }}</h3>
                             <p>+39 000 000 0000</p>
-                            <p class="contact-info-note">Lun-Ven: 9:00 - 18:00</p>
+                            <p class="contact-info-note">{{ _("Lun-Ven: 9:00 - 18:00") }}</p>
                         </div>
 
                         <div class="contact-info-card">
@@ -106,7 +119,7 @@
                             </div>
                             <h3>Email</h3>
                             <p><a href="mailto:info@daognicapodelmondo.it" class="contact-link">info@daognicapodelmondo.it</a></p>
-                            <p class="contact-info-note">Risposta entro 48 ore</p>
+                            <p class="contact-info-note">{{ _("Risposta entro 48 ore") }}</p>
                         </div>
 
                         <div class="contact-info-card">
@@ -116,16 +129,16 @@
                                     <polyline points="12 6 12 12 16 14"/>
                                 </svg>
                             </div>
-                            <h3>Orari</h3>
+                            <h3>{{ _("Orari") }}</h3>
                             <p>Museo Digitale<br>
-                            <strong>Sempre aperto</strong></p>
-                            <p class="contact-info-note">Accesso 24/7 online</p>
+                            <strong>{{ _("Sempre aperto") }}</strong></p>
+                            <p class="contact-info-note">{{ _("Accesso 24/7 online") }}</p>
                         </div>
                     </div>
 
                     <!-- Social Links -->
                     <div class="social-section">
-                        <h3 class="social-title">Seguici</h3>
+                        <h3 class="social-title">{{ _("Seguici") }}</h3>
                         <div class="social-links">
                             <a href="#" class="social-link" aria-label="Facebook">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -160,23 +173,23 @@
     <!-- FAQ Section -->
     <section class="contact-faq">
         <div class="container">
-            <h2 class="section-heading section-heading-centered">Domande Frequenti</h2>
+            <h2 class="section-heading section-heading-centered">{{ _("Domande Frequenti") }}</h2>
             <div class="faq-grid">
                 <div class="faq-item">
-                    <h3>Come posso visitare la collezione?</h3>
-                    <p>La collezione è completamente accessibile online 24/7. Puoi esplorare gli oggetti attraverso la galleria principale o utilizzare la mappa interattiva per scoprire le origini geografiche.</p>
+                    <h3>{{ _("Come posso visitare la collezione?") }}</h3>
+                    <p>{{ _("La collezione è completamente accessibile online 24/7. Puoi esplorare gli oggetti attraverso la galleria principale o utilizzare la mappa interattiva per scoprire le origini geografiche.") }}</p>
                 </div>
                 <div class="faq-item">
-                    <h3>La collezione è gratuita?</h3>
-                    <p>Sì, l'accesso alla collezione digitale è completamente gratuito. Non vendiamo nulla e il nostro obiettivo è rendere il patrimonio culturale accessibile a tutti.</p>
+                    <h3>{{ _("La collezione è gratuita?") }}</h3>
+                    <p>{{ _("Sì, l'accesso alla collezione digitale è completamente gratuito. Non vendiamo nulla e il nostro obiettivo è rendere il patrimonio culturale accessibile a tutti.") }}</p>
                 </div>
                 <div class="faq-item">
-                    <h3>Posso richiedere informazioni su un oggetto specifico?</h3>
-                    <p>Certamente! Utilizza il form di contatto selezionando "Informazioni sulla collezione" come oggetto. Ti risponderemo con tutte le informazioni disponibili.</p>
+                    <h3>{{ _("Posso richiedere informazioni su un oggetto specifico?") }}</h3>
+                    <p>{{ _("Certamente! Utilizza il form di contatto selezionando \"Informazioni sulla collezione\" come oggetto. Ti risponderemo con tutte le informazioni disponibili.") }}</p>
                 </div>
                 <div class="faq-item">
-                    <h3>Accettate donazioni di oggetti?</h3>
-                    <p>Valutiamo ogni proposta di donazione. Contattaci attraverso il form selezionando "Proposta di collaborazione" per discutere la possibilità.</p>
+                    <h3>{{ _("Accettate donazioni di oggetti?") }}</h3>
+                    <p>{{ _("Valutiamo ogni proposta di donazione. Contattaci attraverso il form selezionando \"Proposta di collaborazione\" per discutere la possibilità.") }}</p>
                 </div>
             </div>
         </div>
@@ -184,4 +197,68 @@
 </div>
 {% endblock %}
 
+{% block scripts %}
+<script>
+(function () {
+    'use strict';
 
+    var form = document.getElementById('contactForm');
+    if (!form) return;
+
+    // Map: field id → [groupId, errorId, customMessage?]
+    var fields = [
+        { id: 'name',    group: 'fg-name',    error: 'err-name',    msg: null },
+        { id: 'email',   group: 'fg-email',   error: 'err-email',   msg: 'Inserisci un indirizzo email valido (es. nome@esempio.com).' },
+        { id: 'subject', group: 'fg-subject',  error: 'err-subject', msg: null },
+        { id: 'message', group: 'fg-message',  error: 'err-message', msg: null },
+        { id: 'privacy', group: 'fg-privacy',  error: 'err-privacy', msg: null }
+    ];
+
+    function validateField(cfg) {
+        var el    = document.getElementById(cfg.id);
+        var group = document.getElementById(cfg.group);
+        var errEl = document.getElementById(cfg.error);
+        if (!el || !group) return true;
+
+        var valid = el.checkValidity();
+
+        group.classList.toggle('has-error', !valid);
+        group.classList.toggle('is-valid',   valid && el.value !== '');
+
+        if (!valid && cfg.msg) errEl.textContent = cfg.msg;
+
+        return valid;
+    }
+
+    // Validate on blur (first interaction reveals the error)
+    fields.forEach(function (cfg) {
+        var el = document.getElementById(cfg.id);
+        if (!el) return;
+
+        el.addEventListener('blur', function () { validateField(cfg); });
+
+        // Clear error as user types/changes value
+        el.addEventListener('input', function () {
+            var group = document.getElementById(cfg.group);
+            if (group && group.classList.contains('has-error')) validateField(cfg);
+        });
+        el.addEventListener('change', function () { validateField(cfg); });
+    });
+
+    // Full validation on submit
+    form.addEventListener('submit', function (e) {
+        var allValid = true;
+        fields.forEach(function (cfg) {
+            if (!validateField(cfg)) allValid = false;
+        });
+
+        if (!allValid) {
+            e.preventDefault();
+            // Scroll to the first error field
+            var firstError = form.querySelector('.form-group.has-error');
+            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+})();
+</script>
+{% endblock %}

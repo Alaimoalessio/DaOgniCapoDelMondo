@@ -1,0 +1,270 @@
+Per favore, inserisci username e password.
+Username o password non corretti.
+Logout effettuato con successo.
+Nota salvata con successo.
+Accesso negato. Solo gli amministratori possono accedere a questa sezione.
+Oggetto creato con successo.
+Errore durante la creazione: 
+Oggetto aggiornato con successo.
+Errore durante l'aggiornamento: 
+Oggetto eliminato con successo.
+Errore durante l'eliminazione: 
+Immagini caricate con successo.
+Immagine non trovata.
+Immagine eliminata con successo.
+Errore: 
+Immagine principale impostata.
+Mostra creata con successo.
+Mostra aggiornata con successo.
+Mostra eliminata con successo.
+Valutazione aggiunta con successo.
+QR code generato con successo.
+Non autorizzato.
+Backup disponibile solo per SQLite.
+Backup creato con successo.
+Errore durante il backup: 
+Area Privata
+Benvenuto,
+Statistiche
+Oggetti totali
+Note private
+Prestiti attivi
+Note Recenti
+Nessuna nota ancora.
+Prestiti Attivi
+Prestito a:
+Dal:
+Ritorno previsto:
+Nessun prestito attivo.
+Notifiche
+Vedi Collezione
+Logout
+Collezione
+Epoche
+Didattica
+Esplora Mappa
+Ricerca
+Chi Siamo
+Contatti
+Admin
+Login
+Cerca oggetti, descrizioni, provenienza...
+Cancella ricerca
+Cerca
+Collezione Completa
+Risultati per
+oggetti
+Mostrando
+di
+Prima pagina
+Pagina precedente
+Pagina successiva
+Ultima pagina
+Pagina
+oggetti totali
+Vai a pagina:
+Vai
+Torna alla collezione
+Nota Privata
+Accedi all'area riservata per la famiglia
+Username
+Password
+Ricordami
+Accedi
+Torna alla home
+Torna all'oggetto
+Nota
+Aggiungi una nota privata per questo oggetto...
+Salva Nota
+Annulla
+Torna all'Area Privata
+Segna come letta
+Vedi Oggetto
+Nessuna notifica.
+Ricerca Avanzata
+Testo
+Cerca nel titolo, descrizione...
+Categoria
+Tutte
+Regione
+Epoca
+Materiale
+Tutti
+Anno da
+Anno a
+Stato Conservazione
+Reset
+Risultati
+Nessun risultato trovato.
+Admin Dashboard
+Pannello di Controllo
+Gestisci Oggetti
+Gestisci Mostre
+Oggetti Totali
+Mostre
+Oggetti Recenti
+Vedi Tutti
+Mostre Recenti
+Vedi Tutte
+Azioni Rapide
+Nuovo Oggetto
+Nuova Mostra
+Esporta PDF
+Backup Database
+Modifica Mostra
+Torna alle Mostre
+Informazioni Base
+Titolo
+Descrizione
+Luogo
+Indirizzo
+Date
+Data Inizio
+Data Fine
+Stato
+Pianificata
+Attiva
+Completata
+Oggetti in Mostra
+Seleziona Oggetti
+Tieni premuto Ctrl/Cmd per selezionare più oggetti
+Note
+Salva
+Luogo:
+Al:
+Oggetti:
+Modifica
+Sei sicuro?
+Elimina
+Modifica Oggetto
+Torna agli Oggetti
+Contesto Storico
+Classificazione
+Seleziona...
+Materiali
+Tieni premuto Ctrl/Cmd per selezionare più materiali
+Datazione e Provenienza
+Provenienza
+Immagine
+Carica Immagine
+Gestisci Immagini Multiple
+Conservazione e Acquisizione
+Data Acquisizione
+Costo Acquisizione (€)
+Note e Visibilità
+Note Private
+Visibile al pubblico
+Valutazioni
+Genera QR Code
+Gestisci Immagini
+Torna all'Oggetto
+Carica Nuove Immagini
+Seleziona Immagini
+Puoi selezionare più immagini contemporaneamente
+Didascalia (per tutte le immagini)
+Carica Immagini
+Immagini Esistenti
+Principale
+Imposta Principale
+Nessuna immagine caricata.
+Nuova Valutazione
+Valore Stimato (€)
+Valuta
+Data Valutazione
+Valutatore
+Valore Assicurativo (€)
+Compagnia Assicurativa
+Numero Polizza
+Aggiungi Valutazione
+Storico Valutazioni
+Data
+Valore Stimato
+Valore Assicurativo
+Compagnia
+Nessuna valutazione registrata.
+Cerca...
+Tutte le categorie
+Tutte le regioni
+Filtra
+Nessuna immagine
+Vedi
+Precedente
+Successiva
+Torna al Dashboard
+Statistiche Avanzate
+Visibili al Pubblico
+Valore Totale Stimato
+Per Categoria
+Numero Oggetti
+Per Regione
+Per Epoca
+Oggetti Più Visualizzati
+Oggetto
+Visualizzazioni
+{editor}: Editing failed
+{editor}: Editing failed: {e}
+{text} {deprecated_message}
+Options
+Got unexpected extra argument ({args})
+msgid_plural Got unexpected extra arguments ({args})
+DeprecationWarning: The command {name!r} is deprecated.{extra_message}
+Aborted!
+Commands
+Missing command.
+No such command {name!r}.
+Value must be an iterable.
+Takes {nargs} values but 1 was given.
+msgid_plural Takes {nargs} values but {len} were given.
+env var: {var}
+default: {default}
+required
+(dynamic)
+%(prog)s, version %(version)s
+Show the version and exit.
+Show this message and exit.
+Error: {message}
+Try '{command} {option}' for help.
+Invalid value: {message}
+Invalid value for {param_hint}: {message}
+Missing argument
+Missing option
+Missing parameter
+Missing {param_type}
+Missing parameter: {param_name}
+No such option: {name}
+Did you mean {possibility}?
+msgid_plural (Possible options: {possibilities})
+unknown error
+Could not open file {filename!r}: {message}
+Usage:
+Argument {name!r} takes {nargs} values.
+Option {name!r} does not take a value.
+Option {name!r} requires an argument.
+msgid_plural Option {name!r} requires {nargs} arguments.
+Shell completion is not supported for Bash versions older than 4.4.
+Couldn't detect Bash version, shell completion is not supported.
+Repeat for confirmation
+Error: The value you entered was invalid.
+Error: {e.message}
+Error: The two entered values do not match.
+Error: invalid input
+Press any key to continue...
+{value!r} is not {choice}.
+msgid_plural {value!r} is not one of {choices}.
+{value!r} does not match the format {format}.
+msgid_plural {value!r} does not match the formats {formats}.
+{value!r} is not a valid {number_type}.
+{value} is not in the range {range}.
+{value!r} is not a valid boolean. Recognized values: {states}
+{value!r} is not a valid UUID.
+file
+directory
+path
+{name} {filename!r} does not exist.
+{name} {filename!r} is a file.
+{name} {filename!r} is a directory.
+{name} {filename!r} is not readable.
+{name} {filename!r} is not writable.
+{name} {filename!r} is not executable.
+{len_type} values are required, but {len_value} was given.
+msgid_plural {len_type} values are required, but {len_value} were given.

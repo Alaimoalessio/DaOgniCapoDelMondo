@@ -3,6 +3,11 @@
 {% block title %}Collezione Completa{% endblock %}
 
 {% block content %}
+<!-- Loading overlay — shown while AJAX filter fetch is in-flight -->
+<div class="gallery-loading-overlay" id="galleryLoadingOverlay" role="status" aria-label="Caricamento risultati in corso" aria-live="polite">
+    <div class="gallery-loading-spinner"></div>
+</div>
+
 <div class="museum-gallery-container">
     <!-- Top Filter Bar -->
     <div class="filter-bar">
@@ -154,9 +159,21 @@
     <div class="museum-grid" id="galleryGrid">
         {% for item in items %}
         <article class="museum-item">
+            <!-- Quick View trigger -->
+            <button class="museum-item-quickview"
+                    data-item-id="{{ item.id }}"
+                    aria-label="Anteprima rapida: {{ item.title }}"
+                    title="Vista rapida">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
             <a href="{{ url_for('item_detail', item_id=item.id) }}" class="museum-item-link">
                 <div class="museum-image-wrapper">
-                    <img src="{{ item.image_url|image_url }}" alt="{{ item.title }}" loading="lazy" class="museum-image">
+                    <img src="{{ item.image_url|image_url }}"
+                         alt="{{ item.title }}{% if item.category %}, {{ item.category.name }}{% endif %}{% if item.region %}, {{ item.region.name }}{% endif %}{% if item.era %}, {{ item.era.name }}{% endif %}{% if item.year_from %}, {{ item.year_from }}{% if item.year_to and item.year_to != item.year_from %} – {{ item.year_to }}{% endif %}{% endif %}"
+                         loading="lazy" class="museum-image">
                     <div class="museum-overlay">
                         <div class="museum-overlay-content">
                             <h3 class="museum-item-title">{{ item.title }}</h3>
@@ -270,4 +287,8 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/collezione.js') }}"></script>
 {% endblock %}

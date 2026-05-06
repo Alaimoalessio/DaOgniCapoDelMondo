@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/disgast/Desktop/projects/daognicapodelmondo/museo-digitale/templates/*.html)"
+    ]
+  }
+}
